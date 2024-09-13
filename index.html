@@ -152,12 +152,12 @@
             let array = [];
 
             for (let j = 0; j < size; j++) {
-                let randomValue = Math.floor(Math.random() * 101);
+                let randomValue = Math.ceil(Math.random() * 9);
                 array.push(randomValue);
             }
 
             storedArrays[arrayIndex] = array;
-            console.log("Arrival time "+ arrivalTime);
+            console.log("Arrival time of process "+ (arrayIndex+1) + " is :" + arrivalTime);
             console.log(`Array ${arrayIndex + 1}:`, array);
 
             arrivalTime++;
