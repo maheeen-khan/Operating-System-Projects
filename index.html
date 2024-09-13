@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Random Arrays</title>
+    <style>
+        .circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            color: white;
+            margin: 5px;
+            float: left;
+        }
+
+        .circle-row {
+            display: flex;
+            flex-wrap: nowrap; /* Ensure circles stay in one line */
+            margin-bottom: 20px;
+        }
+
+        .red-circle {
+            background-color: red; /* Red color for Array 1 */
+        }
+
+        .green-circle {
+            background-color: green; /* Green color for Array 2 */
+        }
+
+        .clear {
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+
+    <h3>Click the button to start creating random arrays:</h3>
+    <button onclick="startCreatingArrays()">Start</button>
+
+    <!-- Placeholder for array containers -->
+    <div id="arrayContainer"></div>
+
+    <script>
+        let storedArrays = [];
+
+        function startCreatingArrays() {
+            let numOfArrays = prompt("Enter the number of arrays you want to create (maximum 2):");
+            numOfArrays = parseInt(numOfArrays, 10);
+
+            if (isNaN(numOfArrays) || numOfArrays < 1 || numOfArrays > 2) {
+                alert("Please enter a valid number between 1 and 2.");
+                return;
+            }
+
+            for (let i = 0; i < numOfArrays; i++) {
+                let size = prompt(`Enter the number of elements for Array ${i + 1} (maximum 4):`);
+                size = parseInt(size, 10);
+
+                if (isNaN(size) || size < 1 || size > 4) {
+                    alert("Please enter a valid number between 1 and 4.");
+                    return;
+                }
+
+                createRandomArray(i, size);
+            }
+
+            printOneByOne();
+        }
+
+        function createRandomArray(arrayIndex, size) {
+            let array = [];
+
+            for (let j = 0; j < size; j++) {
+                let randomValue = Math.floor(Math.random() * 101);
+                array.push(randomValue);
+            }
+
+            storedArrays[arrayIndex] = array;
+            console.log(`Array ${arrayIndex + 1}:`, array);
+        }
+
+        function printOneByOne() {
+            let numOfArrays = storedArrays.length;
+
+            // Print all circles of Array 1
+            if (storedArrays[0]) {
+                let rowContainer = document.createElement("div");
+                rowContainer.className = "circle-row";
+                document.getElementById("arrayContainer").appendChild(rowContainer);
+
+                storedArrays[0].forEach(value => {
+                    let circle = createCircle(value, 'red'); // Set Array 1 circles as red
+                    rowContainer.appendChild(circle);
+                });
+            }
+
+            // Print all circles of Array 2
+            if (storedArrays[1]) {
+                let rowContainer = document.createElement("div");
+                rowContainer.className = "circle-row";
+                document.getElementById("arrayContainer").appendChild(rowContainer);
+
+                storedArrays[1].forEach(value => {
+                    let circle = createCircle(value, 'green'); // Set Array 2 circles as green
+                    rowContainer.appendChild(circle);
+                });
+            }
+
+            // Ensure the alternating circles are printed in the same line
+            let rowContainer = document.createElement("div");
+            rowContainer.className = "circle-row";
+            document.getElementById("arrayContainer").appendChild(rowContainer);
+
+            // Print alternating circles of two values from Array 1 and Array 2 in one line
+            let maxSize = Math.max(...storedArrays.map(arr => arr.length));
+            let round = 0;
+
+            while (round < maxSize) {
+                for (let i = 0; i < numOfArrays; i++) {
+                    let start = round * 2;
+                    let end = Math.min(start + 2, storedArrays[i].length);
+
+                    if (start < storedArrays[i].length) {
+                        for (let j = start; j < end; j++) {
+                            let value = storedArrays[i][j];
+                            let color = (i === 0) ? 'red' : 'green'; // Array 1 (red) and Array 2 (green)
+                            let circle = createCircle(value, color);
+                            rowContainer.appendChild(circle);
+                        }
+                    }
+                }
+
+                round++;
+            }
+        }
+
+        function createCircle(number, color) {
+            let circle = document.createElement("div");
+            circle.className = "circle";
+            circle.classList.add(color === 'red' ? 'red-circle' : 'green-circle'); // Apply appropriate color class
+            circle.innerText = number;
+            return circle;
+        }
+    </script>
+
+</body>
+</html>
