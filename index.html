@@ -32,6 +32,10 @@
             background-color: green; /* Green color for Array 2 */
         }
 
+        .blue-circle {
+            background-color: blue; /* Blue color for Array 3 */
+        }
+
         .clear {
             clear: both;
         }
@@ -49,11 +53,15 @@
         let storedArrays = [];
 
         function startCreatingArrays() {
-            let numOfArrays = prompt("Enter the number of arrays you want to create (maximum 2):");
+            // Clear the arrayContainer and the storedArrays
+            document.getElementById("arrayContainer").innerHTML = "";
+            storedArrays = [];  // Clear the previous arrays
+
+            let numOfArrays = prompt("Enter the number of arrays you want to create (maximum 3):");
             numOfArrays = parseInt(numOfArrays, 10);
 
-            if (isNaN(numOfArrays) || numOfArrays < 1 || numOfArrays > 2) {
-                alert("Please enter a valid number between 1 and 2.");
+            if (isNaN(numOfArrays) || numOfArrays < 1 || numOfArrays > 3) {
+                alert("Please enter a valid number between 1 and 3.");
                 return;
             }
 
@@ -93,10 +101,10 @@
                 rowContainer.className = "circle-row";
                 document.getElementById("arrayContainer").appendChild(rowContainer);
 
-                storedArrays[0].forEach(value => {
-                    let circle = createCircle(value, 'red'); // Set Array 1 circles as red
+                for (let i = 0; i < storedArrays[0].length; i++) {
+                    let circle = createCircle(storedArrays[0][i], 'red'); // Set Array 1 circles as red
                     rowContainer.appendChild(circle);
-                });
+                }
             }
 
             // Print all circles of Array 2
@@ -105,10 +113,22 @@
                 rowContainer.className = "circle-row";
                 document.getElementById("arrayContainer").appendChild(rowContainer);
 
-                storedArrays[1].forEach(value => {
-                    let circle = createCircle(value, 'green'); // Set Array 2 circles as green
+                for (let i = 0; i < storedArrays[1].length; i++) {
+                    let circle = createCircle(storedArrays[1][i], 'green'); // Set Array 2 circles as green
                     rowContainer.appendChild(circle);
-                });
+                }
+            }
+
+            // Print all circles of Array 3 (if it exists)
+            if (storedArrays[2]) {
+                let rowContainer = document.createElement("div");
+                rowContainer.className = "circle-row";
+                document.getElementById("arrayContainer").appendChild(rowContainer);
+
+                for (let i = 0; i < storedArrays[2].length; i++) {
+                    let circle = createCircle(storedArrays[2][i], 'blue'); // Set Array 3 circles as blue
+                    rowContainer.appendChild(circle);
+                }
             }
 
             // Ensure the alternating circles are printed in the same line
@@ -116,8 +136,8 @@
             rowContainer.className = "circle-row";
             document.getElementById("arrayContainer").appendChild(rowContainer);
 
-            // Print alternating circles of two values from Array 1 and Array 2 in one line
-            let maxSize = Math.max(...storedArrays.map(arr => arr.length));
+            // Print alternating circles of two values from Array 1, 2, and 3 in one line
+            let maxSize = Math.max(storedArrays[0].length, storedArrays[1].length, storedArrays[2]?.length || 0);
             let round = 0;
 
             while (round < maxSize) {
@@ -128,7 +148,11 @@
                     if (start < storedArrays[i].length) {
                         for (let j = start; j < end; j++) {
                             let value = storedArrays[i][j];
-                            let color = (i === 0) ? 'red' : 'green'; // Array 1 (red) and Array 2 (green)
+                            let color;
+                            if (i === 0) color = 'red';    // Array 1 (red)
+                            else if (i === 1) color = 'green'; // Array 2 (green)
+                            else color = 'blue'; // Array 3 (blue)
+
                             let circle = createCircle(value, color);
                             rowContainer.appendChild(circle);
                         }
@@ -142,7 +166,7 @@
         function createCircle(number, color) {
             let circle = document.createElement("div");
             circle.className = "circle";
-            circle.classList.add(color === 'red' ? 'red-circle' : 'green-circle'); // Apply appropriate color class
+            circle.classList.add(color === 'red' ? 'red-circle' : (color === 'green' ? 'green-circle' : 'blue-circle')); // Apply appropriate color class
             circle.innerText = number;
             return circle;
         }
