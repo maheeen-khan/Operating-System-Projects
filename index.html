@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Random Arrays</title>
     <style>
+        :root{
+            --mainColor : rgb(255, 42, 134);
+        }
+        *{
+            font-family: sans-serif ;
+            text-align: center;
+        }
         .circle {
             width: 100px;
             height: 100px;
@@ -39,23 +46,84 @@
         .clear {
             clear: both;
         }
+        .heading{
+            text-align: center;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-style:oblique;
+            color: var(--mainColor);
+            /* border-bottom: 3px solid rgb(153, 210, 38); */
+            text-shadow: 1px 1px 3px grey;
+            padding-bottom: 9px;
+        }
+        .start{
+            padding: 9px 25px;
+            background-color: var(--mainColor);
+            color: white;
+            border-radius: 15px;
+            border: none;
+            /* box-shadow: 1px 2px 3px gray; */
+            box-shadow: 2px 2px 3px gray inset;
+            margin: 4px;
+        }
+        .start:hover{
+            background-color: rgb(253, 157, 171);
+            cursor: pointer;
+        }
+        .start:active{
+            /* box-shadow: 1px 2px 3px gray inset; */
+            box-shadow: -1px -2px 3px gray inset;
+
+        }
+        .reset{
+            padding: 9px 25px;
+            background-color: rgb(255, 212, 219);
+            border: 1px solid var(--mainColor) !important;
+            color: rgb(103, 100, 100);
+            border-radius: 15px;
+            border: none;
+            /* box-shadow: 1px 2px 3px gray; */
+            margin: 4px;
+            box-shadow: 2px 2px 3px gray inset;
+
+
+        }
+        .reset:hover{
+            background-color: var(--mainColor);
+            color: white;
+            cursor: pointer;
+        }
+        .reset:active{
+            /* box-shadow: 1px 2px 3px gray inset; */
+            box-shadow: -1px -2px 3px gray inset;
+
+        }
     </style>
 </head>
 <body>
 
-    <h3>Click the button to start creating random arrays:</h3>
-    <button onclick="startCreatingArrays()">Start</button>
+    <h1 class="heading">Process Control Block</h1> <hr>
+
+    <h3 style="text-align: center; color: rgb(156, 156, 156);">Click the button to start create processes:</h3>
+    <button onclick="startCreatingArrays()" class="start" title="Click on start button to create the processes.">Start</button>
+    <button onclick="resetFunc()" class="reset" title="Click on reset button to reset the processes.">Reset</button>
 
     <!-- Placeholder for array containers -->
     <div id="arrayContainer"></div>
 
     <script>
         let storedArrays = [];
-
-        function startCreatingArrays() {
-            // Clear the arrayContainer and the storedArrays
+        let arrivalTime = 0;
+        
+        function resetFunc(){
             document.getElementById("arrayContainer").innerHTML = "";
             storedArrays = [];  // Clear the previous arrays
+        }
+
+        function startCreatingArrays() {
+
+            // Clear the arrayContainer and the storedArrays
+            // document.getElementById("arrayContainer").innerHTML = "";
+            // storedArrays = [];  // Clear the previous arrays
 
             let numOfArrays = prompt("Enter the number of arrays you want to create (maximum 3):");
             numOfArrays = parseInt(numOfArrays, 10);
@@ -89,7 +157,10 @@
             }
 
             storedArrays[arrayIndex] = array;
+            console.log("Arrival time "+ arrivalTime);
             console.log(`Array ${arrayIndex + 1}:`, array);
+
+            arrivalTime++;
         }
 
         function printOneByOne() {
