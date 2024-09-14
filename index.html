@@ -34,13 +34,25 @@
         .red-circle {
             background-color: red; /* Red color for Array 1 */
         }
+        .red-circle:hover {
+            background-color: rgb(255, 107, 107); /* Red color for Array 1 */
+            cursor: pointer;
+        }
 
         .green-circle {
             background-color: green; /* Green color for Array 2 */
         }
+        .green-circle:hover {
+            background-color: rgb(26, 232, 26); /* Red color for Array 1 */
+            cursor: pointer;
+        }
 
         .blue-circle {
             background-color: blue; /* Blue color for Array 3 */
+        }
+        .blue-circle:hover {
+            background-color: rgb(132, 132, 253); /* Red color for Array 1 */
+            cursor: pointer;
         }
 
         .clear {
@@ -170,6 +182,7 @@
             if (storedArrays[0]) {
                 let rowContainer = document.createElement("div");
                 rowContainer.className = "circle-row";
+                rowContainer.title = 'Process 1';
                 document.getElementById("arrayContainer").appendChild(rowContainer);
 
                 for (let i = 0; i < storedArrays[0].length; i++) {
@@ -182,6 +195,7 @@
             if (storedArrays[1]) {
                 let rowContainer = document.createElement("div");
                 rowContainer.className = "circle-row";
+                rowContainer.title = 'Process 2';
                 document.getElementById("arrayContainer").appendChild(rowContainer);
 
                 for (let i = 0; i < storedArrays[1].length; i++) {
@@ -194,6 +208,7 @@
             if (storedArrays[2]) {
                 let rowContainer = document.createElement("div");
                 rowContainer.className = "circle-row";
+                rowContainer.title = 'Process 3';
                 document.getElementById("arrayContainer").appendChild(rowContainer);
 
                 for (let i = 0; i < storedArrays[2].length; i++) {
