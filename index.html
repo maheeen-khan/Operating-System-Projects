@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Random Arrays</title>
+    <title>Process Circles with Tooltips</title>
     <style>
-        :root{
-            --mainColor : rgb(255, 42, 134);
+        :root {
+            --mainColor: rgb(255, 42, 134);
         }
-        *{
-            font-family: sans-serif ;
+
+        * {
+            font-family: sans-serif;
             text-align: center;
         }
+
         .circle {
             width: 100px;
             height: 100px;
@@ -27,103 +29,105 @@
 
         .circle-row {
             display: flex;
-            flex-wrap: nowrap; /* Ensure circles stay in one line */
+            flex-wrap: nowrap;
             margin-bottom: 20px;
         }
 
         .red-circle {
-            background-color: red; /* Red color for Array 1 */
+            background-color: red;
         }
+
         .red-circle:hover {
-            background-color: rgb(255, 107, 107); /* Red color for Array 1 */
+            background-color: rgb(255, 107, 107);
             cursor: pointer;
         }
 
         .green-circle {
-            background-color: green; /* Green color for Array 2 */
+            background-color: green;
         }
+
         .green-circle:hover {
-            background-color: rgb(26, 232, 26); /* Red color for Array 1 */
+            background-color: rgb(26, 232, 26);
             cursor: pointer;
         }
 
         .blue-circle {
-            background-color: blue; /* Blue color for Array 3 */
+            background-color: blue;
         }
+
         .blue-circle:hover {
-            background-color: rgb(132, 132, 253); /* Red color for Array 1 */
+            background-color: rgb(132, 132, 253);
             cursor: pointer;
         }
 
         .clear {
             clear: both;
         }
-        .heading{
+
+        .heading {
             text-align: center;
             font-family: Verdana, Geneva, Tahoma, sans-serif;
-            font-style:oblique;
+            font-style: oblique;
             color: var(--mainColor);
             text-shadow: 1px 1px 3px grey;
             padding-bottom: 9px;
         }
-        .start{
+
+        .start, .reset {
             padding: 9px 25px;
-            background-color: var(--mainColor);
-            color: white;
             border-radius: 15px;
-            border: none;
-            box-shadow: 2px 2px 3px gray inset;
             margin: 4px;
         }
-        .start:hover{
+
+        .start {
+            background-color: var(--mainColor);
+            color: white;
+            border: none;
+            box-shadow: 2px 2px 3px gray inset;
+        }
+
+        .start:hover {
             background-color: rgb(253, 157, 171);
             cursor: pointer;
         }
-        .start:active{
-            box-shadow: -1px -2px 3px gray inset;
-        }
-        .reset{
-            padding: 9px 25px;
+
+        .reset {
             background-color: rgb(255, 212, 219);
-            border: 1px solid var(--mainColor) !important;
+            border: 1px solid var(--mainColor);
             color: rgb(103, 100, 100);
-            border-radius: 15px;
-            border: none;
-            margin: 4px;
             box-shadow: 2px 2px 3px gray inset;
         }
-        .reset:hover{
+
+        .reset:hover {
             background-color: var(--mainColor);
             color: white;
             cursor: pointer;
         }
-        .reset:active{
-            box-shadow: -1px -2px 3px gray inset;
-        }
     </style>
 </head>
+
 <body>
 
-    <h1 class="heading">Process Control Block</h1> <hr>
+    <h1 class="heading">Process Control Block</h1>
+    <hr>
 
-    <h3 style="text-align: center; color: rgb(156, 156, 156);">Click the button to start create processes:</h3>
+    <h3 style="color: rgb(156, 156, 156);">Click the button to start creating processes:</h3>
     <button onclick="startCreatingArrays()" class="start" title="Click on start button to create the processes.">Start</button>
     <button onclick="resetFunc()" class="reset" title="Click on reset button to reset the processes.">Reset</button>
 
-    <!-- Placeholder for array containers -->
     <div id="arrayContainer"></div>
 
     <script>
         let storedArrays = [];
-        let arrivalTime = 0;
-        
-        function resetFunc(){
+
+        function resetFunc() {
             document.getElementById("arrayContainer").innerHTML = "";
-            storedArrays = [];  // Clear the previous arrays
+            storedArrays = [];  // Clear the stored arrays
         }
 
         function startCreatingArrays() {
-            // Clear the arrayContainer and the storedArrays
+            resetFunc(); // Clear everything before starting
+
             let numOfArrays = prompt("Enter the number of arrays you want to create (maximum 3):");
             numOfArrays = parseInt(numOfArrays, 10);
 
@@ -156,10 +160,7 @@
             }
 
             storedArrays[arrayIndex] = array;
-            console.log("Arrival time of process "+ (arrayIndex+1) + " is :" + arrivalTime);
             console.log(`Array ${arrayIndex + 1}:`, array);
-
-            arrivalTime++;
         }
 
         function printOneByOne() {
@@ -173,7 +174,7 @@
                 document.getElementById("arrayContainer").appendChild(rowContainer);
 
                 for (let i = 0; i < storedArrays[0].length; i++) {
-                    let circle = createCircle(storedArrays[0][i], 'red'); // Set Array 1 circles as red
+                    let circle = createCircle(storedArrays[0][i], 'red', 'Process 1'); // Set Array 1 circles as red
                     rowContainer.appendChild(circle);
                 }
             }
@@ -186,7 +187,7 @@
                 document.getElementById("arrayContainer").appendChild(rowContainer);
 
                 for (let i = 0; i < storedArrays[1].length; i++) {
-                    let circle = createCircle(storedArrays[1][i], 'green'); // Set Array 2 circles as green
+                    let circle = createCircle(storedArrays[1][i], 'green', 'Process 2'); // Set Array 2 circles as green
                     rowContainer.appendChild(circle);
                 }
             }
@@ -199,49 +200,41 @@
                 document.getElementById("arrayContainer").appendChild(rowContainer);
 
                 for (let i = 0; i < storedArrays[2].length; i++) {
-                    let circle = createCircle(storedArrays[2][i], 'blue'); // Set Array 3 circles as blue
+                    let circle = createCircle(storedArrays[2][i], 'blue', 'Process 3'); // Set Array 3 circles as blue
                     rowContainer.appendChild(circle);
                 }
             }
 
-            // Alternating circles with dynamic titles
-            let maxSize = Math.max(storedArrays[0].length, storedArrays[1].length, storedArrays[2]?.length || 0);
+            // Ensure alternating circles are printed in the same line
+            let rowContainer = document.createElement("div");
+            rowContainer.className = "circle-row";
+            document.getElementById("arrayContainer").appendChild(rowContainer);
+
+            // Print alternating circles from Array 1, 2, and 3
+            let maxSize = Math.max(storedArrays[0]?.length || 0, storedArrays[1]?.length || 0, storedArrays[2]?.length || 0);
             let round = 0;
 
             while (round < maxSize) {
                 for (let i = 0; i < numOfArrays; i++) {
-                    // Create a new row for each process dynamically
-                    let alternatingRow = document.createElement("div");
-                    alternatingRow.className = "circle-row";
-                    alternatingRow.title = `Running Process ${i + 1}`;
-                    document.getElementById("arrayContainer").appendChild(alternatingRow);
+                    if (storedArrays[i] && round < storedArrays[i].length) {
+                        let value = storedArrays[i][round];
+                        let color = i === 0 ? 'red' : (i === 1 ? 'green' : 'blue');
+                        let processTitle = `Running Process ${i + 1}`;
 
-                    let start = round * 2;
-                    let end = Math.min(start + 2, storedArrays[i].length);
-
-                    if (start < storedArrays[i].length) {
-                        for (let j = start; j < end; j++) {
-                            let value = storedArrays[i][j];
-                            let color;
-                            if (i === 0) color = 'red';    // Array 1 (red)
-                            else if (i === 1) color = 'green'; // Array 2 (green)
-                            else color = 'blue'; // Array 3 (blue)
-
-                            let circle = createCircle(value, color);
-                            alternatingRow.appendChild(circle);
-                        }
+                        let circle = createCircle(value, color, processTitle);
+                        rowContainer.appendChild(circle);
                     }
                 }
-
                 round++;
             }
         }
 
-        function createCircle(number, color) {
+        function createCircle(number, color, title) {
             let circle = document.createElement("div");
             circle.className = "circle";
-            circle.classList.add(color === 'red' ? 'red-circle' : (color === 'green' ? 'green-circle' : 'blue-circle')); // Apply appropriate color class
+            circle.classList.add(color === 'red' ? 'red-circle' : (color === 'green' ? 'green-circle' : 'blue-circle'));
             circle.innerText = number;
+            circle.title = title;  // Add title for hover tooltip
             return circle;
         }
     </script>
