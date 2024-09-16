@@ -37,31 +37,12 @@
             background-color: red;
         }
 
-        .red-circle:hover {
-            background-color: rgb(255, 107, 107);
-            cursor: pointer;
-        }
-
         .green-circle {
             background-color: green;
         }
 
-        .green-circle:hover {
-            background-color: rgb(26, 232, 26);
-            cursor: pointer;
-        }
-
         .blue-circle {
             background-color: blue;
-        }
-
-        .blue-circle:hover {
-            background-color: rgb(132, 132, 253);
-            cursor: pointer;
-        }
-
-        .clear {
-            clear: both;
         }
 
         .heading {
@@ -83,34 +64,14 @@
             margin: 4px;
         }
 
-        .start:hover {
-            background-color: rgb(253, 157, 171);
-            cursor: pointer;
-        }
-
-        .start:active {
-            box-shadow: -1px -2px 3px gray inset;
-        }
-
         .reset {
             padding: 9px 25px;
             background-color: rgb(255, 212, 219);
-            border: 1px solid var(--mainColor) !important;
-            color: rgb(103, 100, 100);
+            border: 1px solid var(--mainColor);
             border-radius: 15px;
-            box-shadow: 2px 2px 3px gray inset;
             margin: 4px;
         }
 
-        .reset:hover {
-            background-color: var(--mainColor);
-            color: white;
-            cursor: pointer;
-        }
-
-        .reset:active {
-            box-shadow: -1px -2px 3px gray inset;
-        }
     </style>
 </head>
 <body>
@@ -119,8 +80,8 @@
 <hr>
 
 <h3 style="text-align: center; color: rgb(156, 156, 156);">Click the button to start creating processes:</h3>
-<button onclick="startCreatingArrays()" class="start" title="Click on start button to create the processes.">Start</button>
-<button onclick="resetFunc()" class="reset" title="Click on reset button to reset the processes.">Reset</button>
+<button onclick="startCreatingArrays()" class="start" title="Click to create the processes.">Start</button>
+<button onclick="resetFunc()" class="reset" title="Click to reset the processes.">Reset</button>
 
 <!-- Placeholder for array containers -->
 <div id="arrayContainer"></div>
@@ -131,14 +92,14 @@
 
     function resetFunc() {
         document.getElementById("arrayContainer").innerHTML = "";
-        storedArrays = [];  // Clear the previous arrays
-        arrivalTime = 0;    // Reset arrival time
+        storedArrays = [];
+        arrivalTime = 0;
     }
 
     function startCreatingArrays() {
-        resetFunc(); // Clear previous processes
+        // resetFunc();
 
-        let numOfArrays = prompt("Enter the number of arrays you want to create (maximum 3):");
+        let numOfArrays = prompt("Enter the number of arrays (max 3):");
         numOfArrays = parseInt(numOfArrays, 10);
 
         if (isNaN(numOfArrays) || numOfArrays < 1 || numOfArrays > 3) {
@@ -147,7 +108,7 @@
         }
 
         for (let i = 0; i < numOfArrays; i++) {
-            let size = prompt(`Enter the number of elements for Array ${i + 1} (maximum 4):`);
+            let size = prompt(`Enter the number of elements for Array ${i + 1} (max 4):`);
             size = parseInt(size, 10);
 
             if (isNaN(size) || size < 1 || size > 4) {
@@ -164,22 +125,20 @@
 
     function createRandomArray(arrayIndex, size, arrayName) {
         let array = [];
-
         for (let j = 0; j < size; j++) {
             let randomValue = Math.ceil(Math.random() * 9);
             array.push(randomValue);
         }
 
         storedArrays[arrayIndex] = {
-            name: arrayName, // Store the array name
+            name: arrayName,
             values: array
         };
 
-        // Print the process id and arrival time
+        // Print the process ID and arrival time for each array exactly once
         console.log(`Process ID ${arrayIndex + 1}: ${arrayName}`);
-        console.log(`Arrival time of ${arrayName} is: ${arrivalTime}`);
-
-        arrivalTime++; // Increment the arrival time
+        console.log(`Arrival time of ${arrayName}: ${arrivalTime}`);
+        arrivalTime++;
     }
 
     function printOneByOne() {
@@ -224,7 +183,7 @@
             }
         }
 
-        // Print alternating circles with dynamic titles
+        // Print alternating circles
         let rowContainer = document.createElement("div");
         rowContainer.className = "circle-row";
         document.getElementById("arrayContainer").appendChild(rowContainer);
@@ -234,19 +193,13 @@
 
         while (round < maxSize) {
             for (let i = 0; i < numOfArrays; i++) {
-                let start = round * 2;
-                let end = Math.min(start + 2, storedArrays[i].values.length);
+                if (round < storedArrays[i].values.length) {
+                    let value = storedArrays[i].values[round];
+                    let color = i === 0 ? 'red' : (i === 1 ? 'green' : 'blue');
+                    let circle = createCircle(value, color);
 
-                if (start < storedArrays[i].values.length) {
-                    for (let j = start; j < end; j++) {
-                        let value = storedArrays[i].values[j];
-                        let color = i === 0 ? 'red' : (i === 1 ? 'green' : 'blue');
-                        let circle = createCircle(value, color);
-
-                        // Set dynamic title based on the process number
-                        circle.title = `Running process ${i + 1}`;
-                        rowContainer.appendChild(circle);
-                    }
+                    circle.title = `Running process ${i + 1}`;
+                    rowContainer.appendChild(circle);
                 }
             }
             round++;
