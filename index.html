@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Process Circles with Tooltips</title>
+    <title>Create Random Arrays</title>
     <style>
         :root {
             --mainColor: rgb(255, 42, 134);
@@ -73,17 +73,14 @@
             padding-bottom: 9px;
         }
 
-        .start, .reset {
-            padding: 9px 25px;
-            border-radius: 15px;
-            margin: 4px;
-        }
-
         .start {
+            padding: 9px 25px;
             background-color: var(--mainColor);
             color: white;
+            border-radius: 15px;
             border: none;
             box-shadow: 2px 2px 3px gray inset;
+            margin: 4px;
         }
 
         .start:hover {
@@ -91,11 +88,18 @@
             cursor: pointer;
         }
 
+        .start:active {
+            box-shadow: -1px -2px 3px gray inset;
+        }
+
         .reset {
+            padding: 9px 25px;
             background-color: rgb(255, 212, 219);
-            border: 1px solid var(--mainColor);
+            border: 1px solid var(--mainColor) !important;
             color: rgb(103, 100, 100);
+            border-radius: 15px;
             box-shadow: 2px 2px 3px gray inset;
+            margin: 4px;
         }
 
         .reset:hover {
@@ -103,141 +107,160 @@
             color: white;
             cursor: pointer;
         }
+
+        .reset:active {
+            box-shadow: -1px -2px 3px gray inset;
+        }
     </style>
 </head>
-
 <body>
 
-    <h1 class="heading">Process Control Block</h1>
-    <hr>
+<h1 class="heading">Process Control Block</h1>
+<hr>
 
-    <h3 style="color: rgb(156, 156, 156);">Click the button to start creating processes:</h3>
-    <button onclick="startCreatingArrays()" class="start" title="Click on start button to create the processes.">Start</button>
-    <button onclick="resetFunc()" class="reset" title="Click on reset button to reset the processes.">Reset</button>
+<h3 style="text-align: center; color: rgb(156, 156, 156);">Click the button to start creating processes:</h3>
+<button onclick="startCreatingArrays()" class="start" title="Click on start button to create the processes.">Start</button>
+<button onclick="resetFunc()" class="reset" title="Click on reset button to reset the processes.">Reset</button>
 
-    <div id="arrayContainer"></div>
+<!-- Placeholder for array containers -->
+<div id="arrayContainer"></div>
 
-    <script>
-        let storedArrays = [];
+<script>
+    let storedArrays = [];
+    let arrivalTime = 0;
 
-        function resetFunc() {
-            document.getElementById("arrayContainer").innerHTML = "";
-            storedArrays = [];  // Clear the stored arrays
+    function resetFunc() {
+        document.getElementById("arrayContainer").innerHTML = "";
+        storedArrays = [];  // Clear the previous arrays
+        arrivalTime = 0;    // Reset arrival time
+    }
+
+    function startCreatingArrays() {
+        resetFunc(); // Clear previous processes
+
+        let numOfArrays = prompt("Enter the number of arrays you want to create (maximum 3):");
+        numOfArrays = parseInt(numOfArrays, 10);
+
+        if (isNaN(numOfArrays) || numOfArrays < 1 || numOfArrays > 3) {
+            alert("Please enter a valid number between 1 and 3.");
+            return;
         }
 
-        function startCreatingArrays() {
-            resetFunc(); // Clear everything before starting
+        for (let i = 0; i < numOfArrays; i++) {
+            let size = prompt(`Enter the number of elements for Array ${i + 1} (maximum 4):`);
+            size = parseInt(size, 10);
 
-            let numOfArrays = prompt("Enter the number of arrays you want to create (maximum 3):");
-            numOfArrays = parseInt(numOfArrays, 10);
-
-            if (isNaN(numOfArrays) || numOfArrays < 1 || numOfArrays > 3) {
-                alert("Please enter a valid number between 1 and 3.");
+            if (isNaN(size) || size < 1 || size > 4) {
+                alert("Please enter a valid number between 1 and 4.");
                 return;
             }
 
-            for (let i = 0; i < numOfArrays; i++) {
-                let size = prompt(`Enter the number of elements for Array ${i + 1} (maximum 4):`);
-                size = parseInt(size, 10);
-
-                if (isNaN(size) || size < 1 || size > 4) {
-                    alert("Please enter a valid number between 1 and 4.");
-                    return;
-                }
-
-                createRandomArray(i, size);
-            }
-
-            printOneByOne();
+            let arrayName = prompt(`Enter a name for Array ${i + 1}:`);
+            createRandomArray(i, size, arrayName);
         }
 
-        function createRandomArray(arrayIndex, size) {
-            let array = [];
+        printOneByOne();
+    }
 
-            for (let j = 0; j < size; j++) {
-                let randomValue = Math.ceil(Math.random() * 9);
-                array.push(randomValue);
-            }
+    function createRandomArray(arrayIndex, size, arrayName) {
+        let array = [];
 
-            storedArrays[arrayIndex] = array;
-            console.log(`Array ${arrayIndex + 1}:`, array);
+        for (let j = 0; j < size; j++) {
+            let randomValue = Math.ceil(Math.random() * 9);
+            array.push(randomValue);
         }
 
-        function printOneByOne() {
-            let numOfArrays = storedArrays.length;
+        storedArrays[arrayIndex] = {
+            name: arrayName, // Store the array name
+            values: array
+        };
 
-            // Print all circles of Array 1
-            if (storedArrays[0]) {
-                let rowContainer = document.createElement("div");
-                rowContainer.className = "circle-row";
-                rowContainer.title = 'Process 1';
-                document.getElementById("arrayContainer").appendChild(rowContainer);
+        // Print the process id and arrival time
+        console.log(`Process ID ${arrayIndex + 1}: ${arrayName}`);
+        console.log(`Arrival time of ${arrayName} is: ${arrivalTime}`);
 
-                for (let i = 0; i < storedArrays[0].length; i++) {
-                    let circle = createCircle(storedArrays[0][i], 'red', 'Process 1'); // Set Array 1 circles as red
-                    rowContainer.appendChild(circle);
-                }
-            }
+        arrivalTime++; // Increment the arrival time
+    }
 
-            // Print all circles of Array 2
-            if (storedArrays[1]) {
-                let rowContainer = document.createElement("div");
-                rowContainer.className = "circle-row";
-                rowContainer.title = 'Process 2';
-                document.getElementById("arrayContainer").appendChild(rowContainer);
+    function printOneByOne() {
+        let numOfArrays = storedArrays.length;
 
-                for (let i = 0; i < storedArrays[1].length; i++) {
-                    let circle = createCircle(storedArrays[1][i], 'green', 'Process 2'); // Set Array 2 circles as green
-                    rowContainer.appendChild(circle);
-                }
-            }
-
-            // Print all circles of Array 3 (if it exists)
-            if (storedArrays[2]) {
-                let rowContainer = document.createElement("div");
-                rowContainer.className = "circle-row";
-                rowContainer.title = 'Process 3';
-                document.getElementById("arrayContainer").appendChild(rowContainer);
-
-                for (let i = 0; i < storedArrays[2].length; i++) {
-                    let circle = createCircle(storedArrays[2][i], 'blue', 'Process 3'); // Set Array 3 circles as blue
-                    rowContainer.appendChild(circle);
-                }
-            }
-
-            // Ensure alternating circles are printed in the same line
+        // Print all circles of Array 1
+        if (storedArrays[0]) {
             let rowContainer = document.createElement("div");
             rowContainer.className = "circle-row";
+            rowContainer.title = 'Process 1';
             document.getElementById("arrayContainer").appendChild(rowContainer);
 
-            // Print alternating circles from Array 1, 2, and 3
-            let maxSize = Math.max(storedArrays[0]?.length || 0, storedArrays[1]?.length || 0, storedArrays[2]?.length || 0);
-            let round = 0;
+            for (let i = 0; i < storedArrays[0].values.length; i++) {
+                let circle = createCircle(storedArrays[0].values[i], 'red');
+                rowContainer.appendChild(circle);
+            }
+        }
 
-            while (round < maxSize) {
-                for (let i = 0; i < numOfArrays; i++) {
-                    if (storedArrays[i] && round < storedArrays[i].length) {
-                        let value = storedArrays[i][round];
+        // Print all circles of Array 2
+        if (storedArrays[1]) {
+            let rowContainer = document.createElement("div");
+            rowContainer.className = "circle-row";
+            rowContainer.title = 'Process 2';
+            document.getElementById("arrayContainer").appendChild(rowContainer);
+
+            for (let i = 0; i < storedArrays[1].values.length; i++) {
+                let circle = createCircle(storedArrays[1].values[i], 'green');
+                rowContainer.appendChild(circle);
+            }
+        }
+
+        // Print all circles of Array 3 (if it exists)
+        if (storedArrays[2]) {
+            let rowContainer = document.createElement("div");
+            rowContainer.className = "circle-row";
+            rowContainer.title = 'Process 3';
+            document.getElementById("arrayContainer").appendChild(rowContainer);
+
+            for (let i = 0; i < storedArrays[2].values.length; i++) {
+                let circle = createCircle(storedArrays[2].values[i], 'blue');
+                rowContainer.appendChild(circle);
+            }
+        }
+
+        // Print alternating circles with dynamic titles
+        let rowContainer = document.createElement("div");
+        rowContainer.className = "circle-row";
+        document.getElementById("arrayContainer").appendChild(rowContainer);
+
+        let maxSize = Math.max(storedArrays[0].values.length, storedArrays[1].values.length, storedArrays[2]?.values.length || 0);
+        let round = 0;
+
+        while (round < maxSize) {
+            for (let i = 0; i < numOfArrays; i++) {
+                let start = round * 2;
+                let end = Math.min(start + 2, storedArrays[i].values.length);
+
+                if (start < storedArrays[i].values.length) {
+                    for (let j = start; j < end; j++) {
+                        let value = storedArrays[i].values[j];
                         let color = i === 0 ? 'red' : (i === 1 ? 'green' : 'blue');
-                        let processTitle = `Running Process ${i + 1}`;
+                        let circle = createCircle(value, color);
 
-                        let circle = createCircle(value, color, processTitle);
+                        // Set dynamic title based on the process number
+                        circle.title = `Running process ${i + 1}`;
                         rowContainer.appendChild(circle);
                     }
                 }
-                round++;
             }
+            round++;
         }
+    }
 
-        function createCircle(number, color, title) {
-            let circle = document.createElement("div");
-            circle.className = "circle";
-            circle.classList.add(color === 'red' ? 'red-circle' : (color === 'green' ? 'green-circle' : 'blue-circle'));
-            circle.innerText = number;
-            circle.title = title;  // Add title for hover tooltip
-            return circle;
-        }
-    </script>
+    function createCircle(number, color) {
+        let circle = document.createElement("div");
+        circle.className = "circle";
+        circle.classList.add(color === 'red' ? 'red-circle' : (color === 'green' ? 'green-circle' : 'blue-circle'));
+        circle.innerText = number;
+        return circle;
+    }
+</script>
 
 </body>
 </html>
