@@ -36,13 +36,25 @@
         .red-circle {
             background-color: red;
         }
+        .red-circle:hover {
+            background-color: rgb(252, 151, 151);
+        }
 
         .green-circle {
             background-color: green;
         }
+        .green-circle:hover {
+            background-color: rgb(105, 222, 105);
+            cursor: pointer;
+        }
 
         .blue-circle {
             background-color: blue;
+            cursor: pointer;
+        }
+        .blue-circle:hover {
+            background-color: rgb(131, 131, 255);
+            cursor: pointer;
         }
 
         .heading {
@@ -63,30 +75,13 @@
             box-shadow: 2px 2px 3px gray inset;
             margin: 4px;
         }
-        .start:hover {
-            background-color: rgb(253, 157, 171);
-            cursor: pointer;
-        }
 
-        .start:active {
-            box-shadow: -1px -2px 3px gray inset;
-        }
         .reset {
             padding: 9px 25px;
             background-color: rgb(255, 212, 219);
             border: 1px solid var(--mainColor);
-            box-shadow: 2px 2px 3px gray inset;
             border-radius: 15px;
             margin: 4px;
-        }
-        .reset:hover {
-            background-color: var(--mainColor);
-            color: white;
-            cursor: pointer;
-        }
-
-        .reset:active {
-            box-shadow: -1px -2px 3px gray inset;
         }
 
     </style>
@@ -106,6 +101,7 @@
 <script>
     let storedArrays = [];
     let arrivalTime = 0;
+    let quantum = 1; // Default quantum value
 
     function resetFunc() {
         document.getElementById("arrayContainer").innerHTML = "";
@@ -114,7 +110,7 @@
     }
 
     function startCreatingArrays() {
-        // resetFunc();
+        resetFunc();
 
         let numOfArrays = prompt("Enter the number of arrays (max 3):");
         numOfArrays = parseInt(numOfArrays, 10);
@@ -135,6 +131,12 @@
 
             let arrayName = prompt(`Enter a name for Array ${i + 1}:`);
             createRandomArray(i, size, arrayName);
+        }
+
+        quantum = parseInt(prompt("Enter the quantum value (e.g., 1, 2):"), 10);
+        if (isNaN(quantum) || quantum < 1) {
+            alert("Please enter a valid quantum value.");
+            return;
         }
 
         printOneByOne();
@@ -200,7 +202,7 @@
             }
         }
 
-        // Print alternating circles
+        // Print alternating circles with Quantum
         let rowContainer = document.createElement("div");
         rowContainer.className = "circle-row";
         document.getElementById("arrayContainer").appendChild(rowContainer);
@@ -210,13 +212,19 @@
 
         while (round < maxSize) {
             for (let i = 0; i < numOfArrays; i++) {
-                if (round < storedArrays[i].values.length) {
-                    let value = storedArrays[i].values[round];
-                    let color = i === 0 ? 'red' : (i === 1 ? 'green' : 'blue');
-                    let circle = createCircle(value, color);
+                let start = round * quantum;
+                let end = Math.min(start + quantum, storedArrays[i].values.length);
 
-                    circle.title = `Running process ${i + 1}`;
-                    rowContainer.appendChild(circle);
+                if (start < storedArrays[i].values.length) {
+                    for (let j = start; j < end; j++) {
+                        let value = storedArrays[i].values[j];
+                        let color = i === 0 ? 'red' : (i === 1 ? 'green' : 'blue');
+                        let circle = createCircle(value, color);
+
+                        // Set dynamic title based on the process number
+                        circle.title = `Running process ${i + 1}`;
+                        rowContainer.appendChild(circle);
+                    }
                 }
             }
             round++;
