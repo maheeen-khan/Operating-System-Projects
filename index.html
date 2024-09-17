@@ -36,11 +36,25 @@
         .red-circle {
             background-color: red;
         }
+        .red-circle:hover {
+            background-color: rgb(252, 151, 151);
+        }
+
         .green-circle {
             background-color: green;
         }
+        .green-circle:hover {
+            background-color: rgb(105, 222, 105);
+            cursor: pointer;
+        }
+
         .blue-circle {
             background-color: blue;
+            cursor: pointer;
+        }
+        .blue-circle:hover {
+            background-color: rgb(131, 131, 255);
+            cursor: pointer;
         }
 
         .heading {
@@ -61,13 +75,33 @@
             box-shadow: 2px 2px 3px gray inset;
             margin: 4px;
         }
+        .start:hover {
+            background-color: rgb(253, 157, 171);
+            cursor: pointer;
+        }
+
+        .start:active {
+            box-shadow: -1px -2px 3px gray inset;
+        }
+
         .reset {
             padding: 9px 25px;
             background-color: rgb(255, 212, 219);
             border: 1px solid var(--mainColor);
             border-radius: 15px;
+            box-shadow: 2px 2px 3px rgb(156, 154, 154) inset;
             margin: 4px;
         }
+        .reset:hover {
+            background-color: var(--mainColor);
+            color: white;
+            cursor: pointer;
+        }
+
+        .reset:active {
+            box-shadow: -1px -2px 3px gray inset;
+        }
+
     </style>
 </head>
 <body>
@@ -85,15 +119,14 @@
 <script>
     let storedArrays = [];
     let arrivalTime = 0;
-    let quantum = 1;
+    let quantum = 1; // Default quantum value
     let start_time = 0;
-    let totalExecutionTime = 0;
+    let size;
 
     function resetFunc() {
         document.getElementById("arrayContainer").innerHTML = "";
         storedArrays = [];
         arrivalTime = 0;
-        totalExecutionTime = 0;
     }
 
     function startCreatingArrays() {
@@ -108,7 +141,7 @@
         }
 
         for (let i = 0; i < numOfArrays; i++) {
-            let size = prompt(`Enter the number of elements for Array ${i + 1} (max 4):`);
+            size = prompt(`Enter the number of elements for Array ${i + 1} (max 4):`);
             size = parseInt(size, 10);
 
             if (isNaN(size) || size < 1 || size > 4) {
@@ -127,6 +160,7 @@
         }
 
         printOneByOne();
+        calculateAndPrintTimes();
     }
 
     function createRandomArray(arrayIndex, size, arrayName) {
@@ -140,71 +174,116 @@
             name: arrayName,
             values: array,
             executionTime: size,
-            startTime: totalExecutionTime,
-            arrivalTime: arrivalTime,
-            finishTime: totalExecutionTime + size
+            startTime: start_time,
+            arrivalTime: arrivalTime
         };
 
-        console.log(`Process ID ${arrayIndex + 1}: ${arrayName}`);
-        console.log(`Arrival time of ${arrayName}: ${storedArrays[arrayIndex].arrivalTime}`);
-        console.log(`Start time of ${arrayName}: ${storedArrays[arrayIndex].startTime}`);
-        console.log(`Execution time of ${arrayName}: ${storedArrays[arrayIndex].executionTime}`);
-        console.log(`Finish time of ${arrayName}: ${storedArrays[arrayIndex].finishTime}`);
-
-        totalExecutionTime += size;
         arrivalTime++;
-
-        let waitingTime = storedArrays[arrayIndex].startTime - storedArrays[arrayIndex].arrivalTime;
-        let turnedAroundTime = storedArrays[arrayIndex].finishTime - storedArrays[arrayIndex].arrivalTime;
-        console.log(`Waiting time of ${arrayName}: ${waitingTime}`);
-        console.log(`Turned around time of ${arrayName}: ${turnedAroundTime}`);
-        console.log("\n")
+        start_time += size;
     }
 
     function printOneByOne() {
         let numOfArrays = storedArrays.length;
 
-        for (let i = 0; i < numOfArrays; i++) {
+        // Print all circles of Array 1
+        if (storedArrays[0]) {
             let rowContainer = document.createElement("div");
             rowContainer.className = "circle-row";
-            rowContainer.title = `Process ${i + 1}`;
+            rowContainer.title = 'Process 1';
             document.getElementById("arrayContainer").appendChild(rowContainer);
 
-            for (let j = 0; j < storedArrays[i].values.length; j++) {
-                let color = i === 0 ? 'red' : (i === 1 ? 'green' : 'blue');
-                let circle = createCircle(storedArrays[i].values[j], color);
+            for (let i = 0; i < storedArrays[0].values.length; i++) {
+                let circle = createCircle(storedArrays[0].values[i], 'red');
                 rowContainer.appendChild(circle);
             }
         }
 
-        // Print alternating circles
-        let alternatingRow = document.createElement("div");
-        alternatingRow.className = "circle-row";
-        document.getElementById("arrayContainer").appendChild(alternatingRow);
+        // Print all circles of Array 2
+        if (storedArrays[1]) {
+            let rowContainer = document.createElement("div");
+            rowContainer.className = "circle-row";
+            rowContainer.title = 'Process 2';
+            document.getElementById("arrayContainer").appendChild(rowContainer);
 
-        let maxSize = Math.max(...storedArrays.map(arr => arr.values.length));
-        for (let round = 0; round < maxSize; round++) {
-            for (let i = 0; i < numOfArrays; i++) {
+            for (let i = 0; i < storedArrays[1].values.length; i++) {
+                let circle = createCircle(storedArrays[1].values[i], 'green');
+                rowContainer.appendChild(circle);
+            }
+        }
+
+        // Print all circles of Array 3 (if it exists)
+        if (storedArrays[2]) {
+            let rowContainer = document.createElement("div");
+            rowContainer.className = "circle-row";
+            rowContainer.title = 'Process 3';
+            document.getElementById("arrayContainer").appendChild(rowContainer);
+
+            for (let i = 0; i < storedArrays[2].values.length; i++) {
+                let circle = createCircle(storedArrays[2].values[i], 'blue');
+                rowContainer.appendChild(circle);
+            }
+        }
+
+        // Print alternating circles with Quantum
+        let rowContainer = document.createElement("div");
+        rowContainer.className = "circle-row";
+        document.getElementById("arrayContainer").appendChild(rowContainer);
+
+        let maxSize = Math.max(storedArrays[0].values.length, storedArrays[1].values.length, storedArrays[2]?.values.length || 0);
+        let round = 0;
+
+        while (round < maxSize) {
+            for (let i = 0; i < storedArrays.length; i++) {
                 let start = round * quantum;
                 let end = Math.min(start + quantum, storedArrays[i].values.length);
 
-                for (let j = start; j < end; j++) {
-                    let color = i === 0 ? 'red' : (i === 1 ? 'green' : 'blue');
-                    let circle = createCircle(storedArrays[i].values[j], color);
-                    alternatingRow.appendChild(circle);
+                if (start < storedArrays[i].values.length) {
+                    for (let j = start; j < end; j++) {
+                        let value = storedArrays[i].values[j];
+                        let color = i === 0 ? 'red' : (i === 1 ? 'green' : 'blue');
+                        let circle = createCircle(value, color);
+
+                        // Set dynamic title based on the process number
+                        circle.title = `Running process ${i + 1}`;
+                        rowContainer.appendChild(circle);
+                    }
                 }
             }
+            round++;
         }
     }
 
-    function createCircle(number, color) {
+    function calculateAndPrintTimes() {
+        let numOfArrays = storedArrays.length;
+
+        // Calculate and print turnaround time, waiting time, and utilization time
+        for (let i = 0; i < numOfArrays; i++) {
+            let process = storedArrays[i];
+            let finishTime = process.startTime + process.executionTime;
+            let turnaroundTime = finishTime - process.arrivalTime;
+            let waitingTime = process.startTime - process.arrivalTime;
+            let utilizationTime = (process.executionTime / turnaroundTime) * 100;
+
+            // Print details
+            console.log(`Process ID ${i + 1}: ${process.name}`);
+            console.log(`Arrival time: ${process.arrivalTime}`);
+            console.log(`Execution time: ${process.executionTime}`);
+            console.log(`Start time: ${process.startTime}`);
+            console.log(`Finish time: ${finishTime}`);
+            console.log(`Turnaround time: ${turnaroundTime}`);
+            console.log(`Waiting time: ${waitingTime}`);
+            console.log(`Utilization time: ${utilizationTime.toFixed(2)}%`);
+            console.log('------');
+        }
+    }
+
+    function createCircle(value, colorClass) {
         let circle = document.createElement("div");
-        circle.className = "circle";
-        circle.classList.add(color === 'red' ? 'red-circle' : (color === 'green' ? 'green-circle' : 'blue-circle'));
-        circle.innerText = number;
+        circle.className = "circle " + colorClass + "-circle";
+        circle.textContent = value;
         return circle;
     }
-</script>
 
+</script>
 </body>
 </html>
