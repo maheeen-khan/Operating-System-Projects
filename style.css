@@ -1,0 +1,121 @@
+
+:root {
+    --mainColor: rgb(255, 42, 134);
+}
+
+* {
+    font-family: sans-serif;
+    text-align: center;
+}
+
+.circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    color: white;
+    margin: 5px;
+    float: left;
+}
+
+.circle-row {
+    display: flex;
+    flex-wrap: nowrap;
+    margin-bottom: 20px;
+}
+
+.red-circle {
+    background-color: red;
+}
+
+.red-circle:hover {
+    background-color: rgb(252, 151, 151);
+}
+
+.green-circle {
+    background-color: green;
+}
+
+.green-circle:hover {
+    background-color: rgb(105, 222, 105);
+    cursor: pointer;
+}
+
+.blue-circle {
+    background-color: blue;
+    cursor: pointer;
+}
+
+.blue-circle:hover {
+    background-color: rgb(131, 131, 255);
+    cursor: pointer;
+}
+
+.heading {
+    text-align: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-style: oblique;
+    color: var(--mainColor);
+    text-shadow: 1px 1px 3px grey;
+    padding-bottom: 9px;
+}
+
+.start {
+    padding: 9px 25px;
+    background-color: var(--mainColor);
+    color: white;
+    border-radius: 15px;
+    border: none;
+    box-shadow: 2px 2px 3px gray inset;
+    margin: 4px;
+}
+
+.start:hover {
+    background-color: rgb(253, 157, 171);
+    cursor: pointer;
+}
+
+.start:active {
+    box-shadow: -1px -2px 3px gray inset;
+}
+
+.reset {
+    padding: 9px 25px;
+    background-color: rgb(255, 212, 219);
+    border: 1px solid var(--mainColor);
+    border-radius: 15px;
+    box-shadow: 2px 2px 3px rgb(156, 154, 154) inset;
+    margin: 4px;
+}
+
+.reset:hover {
+    background-color: var(--mainColor);
+    color: white;
+    cursor: pointer;
+}
+
+.reset:active {
+    box-shadow: -1px -2px 3px gray inset;
+}
+
+.yellow-circle {
+    background-color: yellow;
+}
+
+.state-change{
+    animation-name: resourcefulfill;
+    animation-duration: 10s;
+    animation-iteration-count:1 !important;
+    animation-timing-function: ease-in-out;
+}
+@keyframes resourcefulfill{
+    from{
+        background-color: yellow;
+    }
+    to{
+        background-color: green;
+    }
+}

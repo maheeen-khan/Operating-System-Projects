@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Random Arrays</title>
-    <style>
+    <link rel="stylesheet" href="style.css">
+    <!-- <style>
         /* Your existing styles */
         :root {
             --mainColor: rgb(255, 42, 134);
@@ -37,6 +38,7 @@
         .red-circle {
             background-color: red;
         }
+
         .red-circle:hover {
             background-color: rgb(252, 151, 151);
         }
@@ -44,6 +46,7 @@
         .green-circle {
             background-color: green;
         }
+
         .green-circle:hover {
             background-color: rgb(105, 222, 105);
             cursor: pointer;
@@ -53,6 +56,7 @@
             background-color: blue;
             cursor: pointer;
         }
+
         .blue-circle:hover {
             background-color: rgb(131, 131, 255);
             cursor: pointer;
@@ -76,6 +80,7 @@
             box-shadow: 2px 2px 3px gray inset;
             margin: 4px;
         }
+
         .start:hover {
             background-color: rgb(253, 157, 171);
             cursor: pointer;
@@ -93,6 +98,7 @@
             box-shadow: 2px 2px 3px rgb(156, 154, 154) inset;
             margin: 4px;
         }
+
         .reset:hover {
             background-color: var(--mainColor);
             color: white;
@@ -103,7 +109,11 @@
             box-shadow: -1px -2px 3px gray inset;
         }
 
-    </style>
+        .yellow-circle {
+            background-color: yellow;
+        }
+
+    </style> -->
 </head>
 <body>
 
@@ -123,11 +133,13 @@
     let quantum = 1; // Default quantum value
     let start_time = 0;
     let size;
+    let hardwareExcludedIndex = -1; // Index to exclude from alternating circles
 
     function resetFunc() {
         document.getElementById("arrayContainer").innerHTML = "";
         storedArrays = [];
         arrivalTime = 0;
+        hardwareExcludedIndex = -1;
     }
 
     function startCreatingArrays() {
@@ -152,6 +164,18 @@
 
             let arrayName = prompt(`Enter a name for Array ${i + 1}:`);
             createRandomArray(i, size, arrayName);
+        }
+
+        // Prompt for hardware usage for array 2
+        if (numOfArrays > 1) {
+            let useHardware = parseInt(prompt("Do you want to use hardware for Array 2? (press 1 for Yes, 0 for No):"), 10);
+            if (useHardware === 1) {
+                hardwareExcludedIndex = parseInt(prompt("At which index of Array 2 do you want to use hardware?"), 10);
+                if (isNaN(hardwareExcludedIndex) || hardwareExcludedIndex < 0 || hardwareExcludedIndex >= storedArrays[1].values.length) {
+                    alert("Invalid index entered for Array 2 hardware usage.");
+                    hardwareExcludedIndex = -1;
+                }
+            }
         }
 
         quantum = parseInt(prompt("Enter the quantum value (e.g., 1, 2):"), 10);
@@ -183,7 +207,11 @@
         start_time += size;
     }
 
-    function printOneByOne() {
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function printOneByOne() {
         let numOfArrays = storedArrays.length;
 
         // Print all circles of Array 1
@@ -199,7 +227,7 @@
             }
         }
 
-        // Print all circles of Array 2
+        // Print all circles of Array 2, including the hardware demanding index with yellow background
         if (storedArrays[1]) {
             let rowContainer = document.createElement("div");
             rowContainer.className = "circle-row";
@@ -207,7 +235,16 @@
             document.getElementById("arrayContainer").appendChild(rowContainer);
 
             for (let i = 0; i < storedArrays[1].values.length; i++) {
-                let circle = createCircle(storedArrays[1].values[i], 'green');
+                let circle;
+
+                // Change background to yellow if it's the hardware demanding index
+                if (i === hardwareExcludedIndex) {
+                    circle = createCircle(storedArrays[1].values[i], 'yellow');
+                    circle.title = 'Block state';  // Add the block state title
+                } else {
+                    circle = createCircle(storedArrays[1].values[i], 'green');
+                }
+
                 rowContainer.appendChild(circle);
             }
         }
@@ -238,14 +275,16 @@
                 let start = round * quantum;
                 let end = Math.min(start + quantum, storedArrays[i].values.length);
 
-                if (start < storedArrays[i].values.length) {
-                    for (let j = start; j < end; j++) {
-                        let value = storedArrays[i].values[j];
+                for (let j = start; j < end; j++) {
+                    if (i === 1 && j === hardwareExcludedIndex) {
+                        let circle = createCircle(storedArrays[i].values[j], 'green');
+                        circle.classList.add('state-change');
+                        circle.title = 'Process 2 in Running state';
+                        rowContainer.appendChild(circle);
+                        await sleep(10000);  // Pause for 5 seconds
+                    } else {
                         let color = i === 0 ? 'red' : (i === 1 ? 'green' : 'blue');
-                        let circle = createCircle(value, color);
-
-                        // Set dynamic title based on the process number
-                        circle.title = `Running process ${i + 1}`;
+                        let circle = createCircle(storedArrays[i].values[j], color);
                         rowContainer.appendChild(circle);
                     }
                 }
@@ -254,6 +293,12 @@
         }
     }
 
+    function createCircle(value, colorClass) {
+        let circle = document.createElement("div");
+        circle.className = "circle " + colorClass + "-circle";
+        circle.textContent = value;
+        return circle;
+    }
     function calculateAndPrintTimes() {
         let numOfArrays = storedArrays.length;
         let totalUtilization = 0;  // For calculating average utilization
@@ -284,13 +329,16 @@
         let averageUtilization = totalUtilization / numOfArrays;
         console.log(`Average Utilization Time: ${averageUtilization.toFixed(2)}%`);
     }
+    // function calculateAndPrintTimes() {
+    //     let turnAroundTimes = [];
+    //     storedArrays.forEach(arr => {
+    //         let finishTime = arr.startTime + arr.executionTime;
+    //         let turnAroundTime = finishTime - arr.arrivalTime;
+    //         turnAroundTimes.push(turnAroundTime);
+    //     });
 
-    function createCircle(value, colorClass) {
-        let circle = document.createElement("div");
-        circle.className = "circle " + colorClass + "-circle";
-        circle.textContent = value;
-        return circle;
-    }
+    //     console.log('Turnaround times:', turnAroundTimes);
+    // }
 
 </script>
 </body>
