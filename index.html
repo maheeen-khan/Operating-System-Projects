@@ -36,25 +36,13 @@
         .red-circle {
             background-color: red;
         }
-        .red-circle:hover {
-            background-color: rgb(252, 151, 151);
-        }
 
         .green-circle {
             background-color: green;
         }
-        .green-circle:hover {
-            background-color: rgb(105, 222, 105);
-            cursor: pointer;
-        }
 
         .blue-circle {
             background-color: blue;
-            cursor: pointer;
-        }
-        .blue-circle:hover {
-            background-color: rgb(131, 131, 255);
-            cursor: pointer;
         }
 
         .heading {
@@ -75,33 +63,14 @@
             box-shadow: 2px 2px 3px gray inset;
             margin: 4px;
         }
-        .start:hover {
-            background-color: rgb(253, 157, 171);
-            cursor: pointer;
-        }
-
-        .start:active {
-            box-shadow: -1px -2px 3px gray inset;
-        }
 
         .reset {
             padding: 9px 25px;
             background-color: rgb(255, 212, 219);
             border: 1px solid var(--mainColor);
             border-radius: 15px;
-            box-shadow: 2px 2px 3px rgb(156, 154, 154) inset;
             margin: 4px;
         }
-        .reset:hover {
-            background-color: var(--mainColor);
-            color: white;
-            cursor: pointer;
-        }
-
-        .reset:active {
-            box-shadow: -1px -2px 3px gray inset;
-        }
-
     </style>
 </head>
 <body>
@@ -120,7 +89,6 @@
     let storedArrays = [];
     let arrivalTime = 0;
     let quantum = 1; // Default quantum value
-    let size;
 
     function resetFunc() {
         document.getElementById("arrayContainer").innerHTML = "";
@@ -139,8 +107,10 @@
             return;
         }
 
+        let cumulativeStartTime = 0;
+
         for (let i = 0; i < numOfArrays; i++) {
-            size = prompt(`Enter the number of elements for Array ${i + 1} (max 4):`);
+            let size = prompt(`Enter the number of elements for Array ${i + 1} (max 4):`);
             size = parseInt(size, 10);
 
             if (isNaN(size) || size < 1 || size > 4) {
@@ -149,7 +119,10 @@
             }
 
             let arrayName = prompt(`Enter a name for Array ${i + 1}:`);
-            createRandomArray(i, size, arrayName);
+            createRandomArray(i, size, arrayName, cumulativeStartTime);
+
+            // Increment cumulativeStartTime by the current process size (execution time)
+            cumulativeStartTime += size;
         }
 
         quantum = parseInt(prompt("Enter the quantum value (e.g., 1, 2):"), 10);
@@ -161,7 +134,7 @@
         printOneByOne();
     }
 
-    function createRandomArray(arrayIndex, size, arrayName) {
+    function createRandomArray(arrayIndex, size, arrayName, startTime) {
         let array = [];
         for (let j = 0; j < size; j++) {
             let randomValue = Math.ceil(Math.random() * 9);
@@ -171,14 +144,17 @@
         storedArrays[arrayIndex] = {
             name: arrayName,
             values: array,
-            executionTime:size
+            startTime: startTime,
+            executionTime: size // Added execution time
         };
 
-        // Print the process ID and arrival time for each array exactly once
+        // Print the process ID, arrival time, start time, and execution time
         console.log(`Process ID ${arrayIndex + 1}: ${arrayName}`);
         console.log(`Arrival time of ${arrayName}: ${arrivalTime}`);
+        console.log(`Start time of ${arrayName}: ${startTime}`);
+        console.log(`Execution time of ${arrayName}: ${size}`); // Printing execution time
+        console.log("\n")
         arrivalTime++;
-        console.log(`Execution time of ${arrayName}: ${storedArrays[arrayIndex].executionTime}`);
     }
 
     function printOneByOne() {
@@ -188,7 +164,7 @@
         if (storedArrays[0]) {
             let rowContainer = document.createElement("div");
             rowContainer.className = "circle-row";
-            rowContainer.title = 'Process 1';
+            rowContainer.title = `Process 1 (Start Time: ${storedArrays[0].startTime}, Execution Time: ${storedArrays[0].executionTime})`;
             document.getElementById("arrayContainer").appendChild(rowContainer);
 
             for (let i = 0; i < storedArrays[0].values.length; i++) {
@@ -201,7 +177,7 @@
         if (storedArrays[1]) {
             let rowContainer = document.createElement("div");
             rowContainer.className = "circle-row";
-            rowContainer.title = 'Process 2';
+            rowContainer.title = `Process 2 (Start Time: ${storedArrays[1].startTime}, Execution Time: ${storedArrays[1].executionTime})`;
             document.getElementById("arrayContainer").appendChild(rowContainer);
 
             for (let i = 0; i < storedArrays[1].values.length; i++) {
@@ -214,7 +190,7 @@
         if (storedArrays[2]) {
             let rowContainer = document.createElement("div");
             rowContainer.className = "circle-row";
-            rowContainer.title = 'Process 3';
+            rowContainer.title = `Process 3 (Start Time: ${storedArrays[2].startTime}, Execution Time: ${storedArrays[2].executionTime})`;
             document.getElementById("arrayContainer").appendChild(rowContainer);
 
             for (let i = 0; i < storedArrays[2].values.length; i++) {
@@ -228,7 +204,7 @@
         rowContainer.className = "circle-row";
         document.getElementById("arrayContainer").appendChild(rowContainer);
 
-        let maxSize = Math.max(storedArrays[0].values.length, storedArrays[1].values.length, storedArrays[2]?.values.length || 0);
+        let maxSize = Math.max(storedArrays[0]?.values.length || 0, storedArrays[1]?.values.length || 0, storedArrays[2]?.values.length || 0);
         let round = 0;
 
         while (round < maxSize) {
