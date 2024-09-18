@@ -115,7 +115,7 @@
 }
 
 .yellow-circle {
-    background-color: rgb(240, 240, 105);
+    background-color:rgb(171, 171, 171);
 }
 
 /* Container for the heading and circles */
@@ -177,7 +177,7 @@ table#processTable tbody tr:nth-child(odd) {
 
 @keyframes resourcefulfill {
     from {
-        background-color: rgb(240, 240, 105);
+        background-color:rgb(171, 171, 171);
     }
     to {
         background-color: var(--mainColor);
