@@ -114,6 +114,7 @@
         }
 
     </style> -->
+
 </head>
 <body>
 
@@ -127,6 +128,25 @@
 <!-- Placeholder for array containers -->
 <div id="arrayContainer"></div>
 
+<!-- Table for displaying process information -->
+<table id="processTable" border="1" style="width:100%; text-align:center; margin-top:20px; display:none;">
+    <thead>
+        <tr>
+            <th>Process</th>
+            <th>Execution Time</th>
+            <th>Arrival Time</th>
+            <th>Start Time</th>
+            <th>Finish Time</th>
+            <th>Turnaround Time</th>
+            <th>Waiting Time</th>
+            <th>Utilization (%)</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<div id="avg-utlz"></div>
+
 <script>
     let storedArrays = [];
     let arrivalTime = 0;
@@ -136,16 +156,24 @@
     let hardwareExcludedIndex = -1; // Index to exclude from alternating circles
 
     function resetFunc() {
-        document.getElementById("arrayContainer").innerHTML = "";
-        storedArrays = [];
-        arrivalTime = 0;
-        hardwareExcludedIndex = -1;
-    }
+    // Clear the array container
+    document.getElementById("arrayContainer").innerHTML = "";
+    storedArrays = [];
+    arrivalTime = 0;
+    hardwareExcludedIndex = -1;
+
+    // Clear and hide the process table
+    document.querySelector("#processTable tbody").innerHTML = ""; // Clear table body
+    document.getElementById("processTable").style.display = "none"; // Hide table
+
+    // Hide the average utilization display
+    document.getElementById('avg-utlz').style.display = 'none';
+}
 
     function startCreatingArrays() {
-        resetFunc();
+        // resetFunc();
 
-        let numOfArrays = prompt("Enter the number of arrays (max 3):");
+        let numOfArrays = prompt("Enter the number of Process (max 3):");
         numOfArrays = parseInt(numOfArrays, 10);
 
         if (isNaN(numOfArrays) || numOfArrays < 1 || numOfArrays > 3) {
@@ -154,7 +182,7 @@
         }
 
         for (let i = 0; i < numOfArrays; i++) {
-            size = prompt(`Enter the number of elements for Array ${i + 1} (max 4):`);
+            size = prompt(`Enter the execution time for Process ${i + 1} (max 4):`);
             size = parseInt(size, 10);
 
             if (isNaN(size) || size < 1 || size > 4) {
@@ -162,17 +190,17 @@
                 return;
             }
 
-            let arrayName = prompt(`Enter a name for Array ${i + 1}:`);
+            let arrayName = prompt(`Enter a name for Process ${i + 1}:`);
             createRandomArray(i, size, arrayName);
         }
 
         // Prompt for hardware usage for array 2
         if (numOfArrays > 1) {
-            let useHardware = parseInt(prompt("Do you want to use hardware for Array 2? (press 1 for Yes, 0 for No):"), 10);
+            let useHardware = parseInt(prompt("Do you have a demand of hardware for Process 2? (press 1 for Yes, 0 for No):"), 10);
             if (useHardware === 1) {
-                hardwareExcludedIndex = parseInt(prompt("At which index of Array 2 do you want to use hardware?"), 10);
+                hardwareExcludedIndex = parseInt(prompt("At which index of Process 2 do you want to use hardware?"), 10);
                 if (isNaN(hardwareExcludedIndex) || hardwareExcludedIndex < 0 || hardwareExcludedIndex >= storedArrays[1].values.length) {
-                    alert("Invalid index entered for Array 2 hardware usage.");
+                    alert("Invalid index entered for Process 2 hardware usage.");
                     hardwareExcludedIndex = -1;
                 }
             }
@@ -301,35 +329,64 @@
         return circle;
     }
     function calculateAndPrintTimes() {
-        let numOfArrays = storedArrays.length;
-        let totalUtilization = 0;  // For calculating average utilization
+    let numOfArrays = storedArrays.length;
+    let totalUtilization = 0;  // For calculating average utilization
+    let lastFinishTime = 0;    // To keep track of the previous process's finish time
 
-        // Calculate and print turnaround time, waiting time, and utilization time
-        for (let i = 0; i < numOfArrays; i++) {
-            let process = storedArrays[i];
-            let finishTime = process.startTime + process.executionTime;
-            let turnaroundTime = finishTime - process.arrivalTime;
-            let waitingTime = process.startTime - process.arrivalTime;
-            let utilizationTime = (process.executionTime / turnaroundTime) * 100;
+    // Calculate and print turnaround time, waiting time, and utilization time
+    for (let i = 0; i < numOfArrays; i++) {
+        let process = storedArrays[i];
 
-            // Add to total utilization for average calculation
-            totalUtilization += utilizationTime;
+        // Adjust start time to be the max of last finish time and current process arrival
+        process.startTime = Math.max(lastFinishTime, process.arrivalTime);
+        let finishTime = process.startTime + process.executionTime;
 
-            console.log(`Process ${i + 1}:`);
-            console.log(`Execution time: ${process.executionTime}`);
-            console.log(`Arrival time: ${process.arrivalTime}`);
-            console.log(`Start time: ${process.startTime}`);
-            console.log(`Finish time: ${finishTime}`);
-            console.log(`Turnaround time: ${turnaroundTime}`);
-            console.log(`Waiting time: ${waitingTime}`);
-            console.log(`Utilization time: ${utilizationTime.toFixed(2)}%`);
-            console.log('------');
-        }
+        // Update last finish time for next process
+        lastFinishTime = finishTime;
 
-        // Calculate average utilization time
-        let averageUtilization = totalUtilization / numOfArrays;
-        console.log(`Average Utilization Time: ${averageUtilization.toFixed(2)}%`);
+        let turnaroundTime = finishTime - process.arrivalTime;
+        let waitingTime = process.startTime - process.arrivalTime;
+        let utilizationTime = (process.executionTime / turnaroundTime) * 100;
+
+        // Add to total utilization for average calculation
+        totalUtilization += utilizationTime;
+
+        console.log(`Process ${i + 1}:`);
+        console.log(`Execution time: ${process.executionTime}`);
+        console.log(`Arrival time: ${process.arrivalTime}`);
+        console.log(`Start time: ${process.startTime}`);
+        console.log(`Finish time: ${finishTime}`);
+        console.log(`Turnaround time: ${turnaroundTime}`);
+        console.log(`Waiting time: ${waitingTime}`);
+        console.log(`Utilization time: ${utilizationTime.toFixed(2)}%`);
+        console.log('------');
+
+        // Append the data to the table
+        let row = document.createElement("tr");
+        row.innerHTML = `
+            <td>Process ${i + 1}</td>
+            <td>${process.executionTime}</td>
+            <td>${process.arrivalTime}</td>
+            <td>${process.startTime}</td>
+            <td>${finishTime}</td>
+            <td>${turnaroundTime}</td>
+            <td>${waitingTime}</td>
+            <td>${utilizationTime.toFixed(2)}%</td>
+        `;
+        document.querySelector("#processTable tbody").appendChild(row);
     }
+
+    // Show the table
+    document.getElementById("processTable").style.display = "table";
+
+    // Calculate average utilization time
+    let averageUtilization = totalUtilization / numOfArrays;
+    console.log(`Average Utilization Time: ${averageUtilization.toFixed(2)}%`);
+
+    document.getElementById('avg-utlz').style.display = 'block';
+    document.getElementById('avg-utlz').innerHTML = `<h3> Average Utilization Time:  ${averageUtilization.toFixed(2)}% </h3>`;
+}
+
     // function calculateAndPrintTimes() {
     //     let turnAroundTimes = [];
     //     storedArrays.forEach(arr => {

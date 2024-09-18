@@ -7,7 +7,15 @@
     font-family: sans-serif;
     text-align: center;
 }
-
+#avg-utlz{
+    display: none;
+    background-color: rgb(253, 157, 171);
+    margin-top: 25px !important;
+    padding: 10px;
+    border: 2px solid var(--mainColor);
+    border-radius: 15px;
+    color: rgb(73, 73, 73);
+}
 .circle {
     width: 100px;
     height: 100px;
@@ -28,24 +36,25 @@
 }
 
 .red-circle {
-    background-color: red;
+    background-color: violet;
 }
 
 .red-circle:hover {
-    background-color: rgb(252, 151, 151);
+    background-color: rgb(237, 187, 237);
+    cursor: pointer;
 }
 
 .green-circle {
-    background-color: green;
+    background-color:var(--mainColor);
 }
 
 .green-circle:hover {
-    background-color: rgb(105, 222, 105);
+    background-color: rgb(254, 139, 189);
     cursor: pointer;
 }
 
 .blue-circle {
-    background-color: blue;
+    background-color: rgb(67, 67, 181);
     cursor: pointer;
 }
 
@@ -102,8 +111,38 @@
 }
 
 .yellow-circle {
-    background-color: yellow;
+    background-color: rgb(240, 240, 105);
 }
+
+table#processTable {
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
+    background-color: rgb(255, 212, 219); /* Light pink background */
+    border-collapse: collapse;
+    border: 2px solid var(--mainColor); /* Pink border */
+}
+
+table#processTable th {
+    background-color: var(--mainColor); /* Use the main pink color for the header */
+    color: white; /* White text for contrast */
+    padding: 10px;
+    border: 1px solid var(--mainColor);
+}
+
+table#processTable td {
+    padding: 8px;
+    border: 1px solid var(--mainColor); /* Pink border for cells */
+}
+
+table#processTable tbody tr:nth-child(even) {
+    background-color: rgb(255, 234, 241); /* Lighter pink for even rows */
+}
+
+table#processTable tbody tr:nth-child(odd) {
+    background-color: rgb(255, 248, 252); /* Very light pink for odd rows */
+}
+
 
 .state-change{
     animation-name: resourcefulfill;
@@ -113,9 +152,9 @@
 }
 @keyframes resourcefulfill{
     from{
-        background-color: yellow;
+        background-color: rgb(240, 240, 105);
     }
     to{
-        background-color: green;
+        background-color: var(--mainColor);
     }
 }
