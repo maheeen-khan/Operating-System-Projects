@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Random Arrays</title>
     <link rel="stylesheet" href="style.css">
-    <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-  />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <!-- <style>
         /* Your existing styles */
         :root {
@@ -120,293 +118,297 @@
     </style> -->
 
 </head>
+
 <body>
 
-<h1 class="heading">Process Control Block</h1>
-<hr>
+    <h1 class="heading">Process Control Block</h1>
+    <hr>
 
-<h3 style="text-align: center; color: rgb(156, 156, 156);">Click the button to start creating processes:</h3>
-<button onclick="startCreatingArrays()" class="start" title="Click to create the processes.">Start</button>
-<button onclick="resetFunc()" class="reset" title="Click to reset the processes.">Reset</button>
+    <h3 style="text-align: center; color: rgb(156, 156, 156);">Click the button to start creating processes:</h3>
+    <button onclick="startCreatingArrays()" class="start" title="Click to create the processes.">Start</button>
+    <button onclick="resetFunc()" class="reset" title="Click to reset the processes.">Reset</button>
 
-<!-- Placeholder for array containers -->
-<div id="arrayContainer"></div>
+    <!-- Placeholder for array containers -->
+    <div id="arrayContainer"></div>
 
-<!-- Table for displaying process information -->
-<table id="processTable" border="1" style="width:100%; text-align:center; margin-top:20px; display:none;">
-    <thead>
-        <tr>
-            <th>Process</th>
-            <th>Process ID</th>
-            <th>Execution Time</th>
-            <th>Arrival Time</th>
-            <th>Start Time</th>
-            <th>Finish Time</th>
-            <th>Turnaround Time</th>
-            <th>Waiting Time</th>
-            <th>Utilization (%)</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
+    <!-- Table for displaying process information -->
+    <table id="processTable" border="1" style="width:100%; text-align:center; margin-top:20px; display:none;">
+        <thead>
+            <tr>
+                <th>Process</th>
+                <th>Process ID</th>
+                <th>Execution Time</th>
+                <th>Arrival Time</th>
+                <th>Start Time</th>
+                <th>Finish Time</th>
+                <th>Turnaround Time</th>
+                <th>Waiting Time</th>
+                <th>Utilization (%)</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 
-<div id="avg-utlz"></div>
+    <div id="avg-utlz"></div>
 
-<script>
-    let storedArrays = [];
-    let arrivalTime = 0;
-    let quantum = 1; // Default quantum value
-    let start_time = 0;
-    let size;
-    let hardwareExcludedIndex = -1; // Index to exclude from alternating circles
+    <script>
+        let storedArrays = [];
+        let arrivalTime = 0;
+        let quantum = 1; // Default quantum value
+        let start_time = 0;
+        let size;
+        let hardwareExcludedIndex = -1; // Index to exclude from alternating circles
 
-    function resetFunc() {
-    // Clear the array container
-    document.getElementById("arrayContainer").innerHTML = "";
-    storedArrays = [];
-    arrivalTime = 0;
-    hardwareExcludedIndex = -1;
+        function resetFunc() {
+            // Clear the array container
+            document.getElementById("arrayContainer").innerHTML = "";
+            storedArrays = [];
+            arrivalTime = 0;
+            hardwareExcludedIndex = -1;
 
-    // Clear and hide the process table
-    document.querySelector("#processTable tbody").innerHTML = ""; // Clear table body
-    document.getElementById("processTable").style.display = "none"; // Hide table
+            // Clear and hide the process table
+            document.querySelector("#processTable tbody").innerHTML = ""; // Clear table body
+            document.getElementById("processTable").style.display = "none"; // Hide table
 
-    // Hide the average utilization display
-    document.getElementById('avg-utlz').style.display = 'none';
-}
-
-    function startCreatingArrays() {
-        // resetFunc();
-
-        let numOfArrays = prompt("Enter the number of Process (max 3):");
-        numOfArrays = parseInt(numOfArrays, 10);
-
-        if (isNaN(numOfArrays) || numOfArrays < 1 || numOfArrays > 3) {
-            alert("Please enter a valid number between 1 and 3.");
-            return;
+            // Hide the average utilization display
+            document.getElementById('avg-utlz').style.display = 'none';
         }
 
-        for (let i = 0; i < numOfArrays; i++) {
-            size = prompt(`Enter the execution time for Process ${i + 1} (max 4):`);
-            size = parseInt(size, 10);
+        function startCreatingArrays() {
+            // resetFunc();
 
-            if (isNaN(size) || size < 1 || size > 4) {
-                alert("Please enter a valid number between 1 and 4.");
+            let numOfArrays = prompt("Enter the number of Process (max 3):");
+            numOfArrays = parseInt(numOfArrays, 10);
+
+            if (isNaN(numOfArrays) || numOfArrays < 1 || numOfArrays > 3) {
+                alert("Please enter a valid number between 1 and 3.");
                 return;
             }
 
-            let arrayName = prompt(`Enter a name for Process ${i + 1}:`);
-            createRandomArray(i, size, arrayName);
-        }
+            for (let i = 0; i < numOfArrays; i++) {
+                size = prompt(`Enter the execution time for Process ${i + 1} (max 4):`);
+                size = parseInt(size, 10);
 
-        // Prompt for hardware usage for array 2
-        if (numOfArrays > 1) {
-            let useHardware = parseInt(prompt("Do you have a demand of hardware for Process 2? (press 1 for Yes, 0 for No):"), 10);
-            if (useHardware === 1) {
-                hardwareExcludedIndex = parseInt(prompt("At which index of Process 2 do you want to use hardware?"), 10);
-                if (isNaN(hardwareExcludedIndex) || hardwareExcludedIndex < 0 || hardwareExcludedIndex >= storedArrays[1].values.length) {
-                    alert("Invalid index entered for Process 2 hardware usage.");
-                    hardwareExcludedIndex = -1;
+                if (isNaN(size) || size < 1 || size > 4) {
+                    alert("Please enter a valid number between 1 and 4.");
+                    return;
+                }
+
+                let arrayName = prompt(`Enter a name for Process ${i + 1}:`);
+                createRandomArray(i, size, arrayName);
+            }
+
+            // Prompt for hardware usage for array 2
+            if (numOfArrays > 1) {
+                let useHardware = parseInt(prompt("Do you have a demand of hardware for Process 2? (press 1 for Yes, 0 for No):"), 10);
+                if (useHardware === 1) {
+                    hardwareExcludedIndex = parseInt(prompt("At which index of Process 2 do you want to use hardware?"), 10);
+                    if (isNaN(hardwareExcludedIndex) || hardwareExcludedIndex < 0 || hardwareExcludedIndex >= storedArrays[1].values.length) {
+                        alert("Invalid index entered for Process 2 hardware usage.");
+                        hardwareExcludedIndex = -1;
+                    }
                 }
             }
-        }
 
-        quantum = parseInt(prompt("Enter the quantum value (e.g., 1, 2):"), 10);
-        if (isNaN(quantum) || quantum < 1) {
-            alert("Please enter a valid quantum value.");
-            return;
-        }
-
-        printOneByOne();
-        calculateAndPrintTimes();
-    }
-
-    function createRandomArray(arrayIndex, size, arrayName) {
-        let array = [];
-        for (let j = 0; j < size; j++) {
-            let randomValue = Math.ceil(Math.random() * 9);
-            array.push(randomValue);
-        }
-
-        storedArrays[arrayIndex] = {
-            name: arrayName,
-            values: array,
-            executionTime: size,
-            startTime: start_time,
-            arrivalTime: arrivalTime
-        };
-
-        arrivalTime++;
-        start_time += size;
-    }
-
-    function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
-    async function printOneByOne() {
-    let numOfArrays = storedArrays.length;
-
-    // Print Array 1 heading and all its circles
-    if (storedArrays[0]) {
-        let arrayWrapper = document.createElement("div");
-        arrayWrapper.className = "array-wrapper";
-        document.getElementById("arrayContainer").appendChild(arrayWrapper);
-
-        let array1Heading = document.createElement("div");
-        array1Heading.textContent = "Array 1 in Ready Queue"; // Add heading for Array 1
-        array1Heading.className = "array-heading"; // CSS class for the heading
-        arrayWrapper.appendChild(array1Heading);
-
-        let rowContainer = document.createElement("div");
-        rowContainer.className = "circle-row";
-        rowContainer.title = 'Process 1 in Ready-Queue';
-        arrayWrapper.appendChild(rowContainer);
-
-        for (let i = 0; i < storedArrays[0].values.length; i++) {
-            let circle = createCircle(storedArrays[0].values[i], 'red');
-            rowContainer.appendChild(circle);
-        }
-    }
-
-    // Print Array 2 heading and all its circles
-    if (storedArrays[1]) {
-        let arrayWrapper = document.createElement("div");
-        arrayWrapper.className = "array-wrapper";
-        document.getElementById("arrayContainer").appendChild(arrayWrapper);
-
-        let array2Heading = document.createElement("div");
-        array2Heading.textContent = "Array 2 in Ready Queue"; // Add heading for Array 2
-        array2Heading.className = "array-heading"; // CSS class for the heading
-        arrayWrapper.appendChild(array2Heading);
-
-        let rowContainer = document.createElement("div");
-        rowContainer.className = "circle-row";
-        rowContainer.title = 'Process 2 in Ready-Queue';
-        arrayWrapper.appendChild(rowContainer);
-
-        for (let i = 0; i < storedArrays[1].values.length; i++) {
-            let circle;
-
-            // Change background to yellow if it's the hardware-demanding index
-            if (i === hardwareExcludedIndex) {
-                circle = createCircle(storedArrays[1].values[i], 'yellow');
-                circle.title = 'Block state';  // Add the block state title
-            } else {
-                circle = createCircle(storedArrays[1].values[i], 'green');
+            quantum = parseInt(prompt("Enter the quantum value (e.g., 1, 2):"), 10);
+            if (isNaN(quantum) || quantum < 1) {
+                alert("Please enter a valid quantum value.");
+                return;
             }
 
-            rowContainer.appendChild(circle);
+            printOneByOne();
+            calculateAndPrintTimes();
         }
-    }
 
-    // Print Array 3 heading and all its circles (if it exists)
-    if (storedArrays[2]) {
-        let arrayWrapper = document.createElement("div");
-        arrayWrapper.className = "array-wrapper";
-        document.getElementById("arrayContainer").appendChild(arrayWrapper);
+        function createRandomArray(arrayIndex, size, arrayName) {
+            let array = [];
+            for (let j = 0; j < size; j++) {
+                let randomValue = Math.ceil(Math.random() * 9);
+                array.push(randomValue);
+            }
 
-        let array3Heading = document.createElement("div");
-        array3Heading.textContent = "Array 3 in Ready Queue"; // Add heading for Array 3
-        array3Heading.className = "array-heading"; // CSS class for the heading
-        arrayWrapper.appendChild(array3Heading);
+            storedArrays[arrayIndex] = {
+                name: arrayName,
+                values: array,
+                executionTime: size,
+                startTime: start_time,
+                arrivalTime: arrivalTime
+            };
 
-        let rowContainer = document.createElement("div");
-        rowContainer.className = "circle-row";
-        rowContainer.title = 'Process 3 in Ready-Queue';
-        arrayWrapper.appendChild(rowContainer);
-
-        for (let i = 0; i < storedArrays[2].values.length; i++) {
-            let circle = createCircle(storedArrays[2].values[i], 'blue');
-            rowContainer.appendChild(circle);
+            arrivalTime++;
+            start_time += size;
         }
-    }
 
-    // NEW: Print heading for alternating process circles
-    let processHeadingWrapper = document.createElement("div");
-    processHeadingWrapper.className = "array-wrapper";
-    document.getElementById("arrayContainer").appendChild(processHeadingWrapper);
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
 
-    let processHeading = document.createElement("div");
-    processHeading.textContent = "Process in Running State";  // Add heading for alternating process circles
-    processHeading.className = "array-heading";
-    processHeadingWrapper.appendChild(processHeading);
+        async function printOneByOne() {
+            let numOfArrays = storedArrays.length;
 
-    let rowContainer = document.createElement("div");
-    rowContainer.className = "circle-row";
-    processHeadingWrapper.appendChild(rowContainer);
+            // Print Array 1 heading and all its circles
+            if (storedArrays[0]) {
+                let arrayWrapper = document.createElement("div");
+                arrayWrapper.className = "array-wrapper";
+                document.getElementById("arrayContainer").appendChild(arrayWrapper);
 
-    // Alternating process circle printing
-    let maxSize = Math.max(storedArrays[0].values.length, storedArrays[1].values.length, storedArrays[2]?.values.length || 0);
-    let round = 0;
+                let array1Heading = document.createElement("div");
+                array1Heading.textContent = "Process 1 in Ready Queue"; // Add heading for Array 1
+                array1Heading.className = "array-heading"; // CSS class for the heading
+                arrayWrapper.appendChild(array1Heading);
 
-    while (round < maxSize) {
-        for (let i = 0; i < storedArrays.length; i++) {
-            let start = round * quantum;
-            let end = Math.min(start + quantum, storedArrays[i].values.length);
+                let rowContainer = document.createElement("div");
+                rowContainer.className = "circle-row";
+                rowContainer.title = 'Process 1 in Ready-Queue';
+                arrayWrapper.appendChild(rowContainer);
 
-            for (let j = start; j < end; j++) {
-                if (i === 1 && j === hardwareExcludedIndex) {
-                    let circle = createCircle(storedArrays[i].values[j], 'green');
-                    circle.classList.add('state-change');
-                    circle.title = 'Process 2 in Running state';
-                    rowContainer.appendChild(circle);
-                    await sleep(10000);  // Pause for 5 seconds
-                } else {
-                    let color = i === 0 ? 'red' : (i === 1 ? 'green' : 'blue');
-                    let circle = createCircle(storedArrays[i].values[j], color);
-                    circle.title = `Process ${i + 1} is in Running state`;
+                for (let i = 0; i < storedArrays[0].values.length; i++) {
+                    let circle = createCircle(storedArrays[0].values[i], 'red');
                     rowContainer.appendChild(circle);
                 }
             }
+
+            // Print Array 2 heading and all its circles
+            if (storedArrays[1]) {
+                let arrayWrapper = document.createElement("div");
+                arrayWrapper.className = "array-wrapper";
+                document.getElementById("arrayContainer").appendChild(arrayWrapper);
+
+                let array2Heading = document.createElement("div");
+                array2Heading.textContent = "Process 2 in Ready Queue"; // Add heading for Array 2
+                array2Heading.className = "array-heading"; // CSS class for the heading
+                arrayWrapper.appendChild(array2Heading);
+
+                let rowContainer = document.createElement("div");
+                rowContainer.className = "circle-row";
+                rowContainer.title = 'Process 2 in Ready-Queue';
+                arrayWrapper.appendChild(rowContainer);
+
+                for (let i = 0; i < storedArrays[1].values.length; i++) {
+                    let circle;
+
+                    // Change background to yellow if it's the hardware-demanding index
+                    if (i === hardwareExcludedIndex) {
+                        circle = createCircle(storedArrays[1].values[i], 'yellow');
+                        circle.title = 'Block state';  // Add the block state title
+                    } else {
+                        circle = createCircle(storedArrays[1].values[i], 'green');
+                    }
+
+                    rowContainer.appendChild(circle);
+                }
+            }
+
+            // Print Array 3 heading and all its circles (if it exists)
+            if (storedArrays[2]) {
+                let arrayWrapper = document.createElement("div");
+                arrayWrapper.className = "array-wrapper";
+                document.getElementById("arrayContainer").appendChild(arrayWrapper);
+
+                let array3Heading = document.createElement("div");
+                array3Heading.textContent = "Process 3 in Ready Queue"; // Add heading for Array 3
+                array3Heading.className = "array-heading"; // CSS class for the heading
+                arrayWrapper.appendChild(array3Heading);
+
+                let rowContainer = document.createElement("div");
+                rowContainer.className = "circle-row";
+                rowContainer.title = 'Process 3 in Ready-Queue';
+                arrayWrapper.appendChild(rowContainer);
+
+                for (let i = 0; i < storedArrays[2].values.length; i++) {
+                    let circle = createCircle(storedArrays[2].values[i], 'blue');
+                    rowContainer.appendChild(circle);
+                }
+            }
+            // Insert an <hr> separator after the process circles (specifically after Process 3)
+            let hr = document.createElement("hr");
+            arrayContainer.appendChild(hr);
+
+            // NEW: Print heading for alternating process circles
+            let processHeadingWrapper = document.createElement("div");
+            processHeadingWrapper.className = "array-wrapper";
+            document.getElementById("arrayContainer").appendChild(processHeadingWrapper);
+
+            let processHeading = document.createElement("div");
+            processHeading.textContent = "Process in Running State";  // Add heading for alternating process circles
+            processHeading.className = "array-heading";
+            processHeadingWrapper.appendChild(processHeading);
+
+            let rowContainer = document.createElement("div");
+            rowContainer.className = "circle-row";
+            processHeadingWrapper.appendChild(rowContainer);
+
+            // Alternating process circle printing
+            let maxSize = Math.max(storedArrays[0].values.length, storedArrays[1].values.length, storedArrays[2]?.values.length || 0);
+            let round = 0;
+
+            while (round < maxSize) {
+                for (let i = 0; i < storedArrays.length; i++) {
+                    let start = round * quantum;
+                    let end = Math.min(start + quantum, storedArrays[i].values.length);
+
+                    for (let j = start; j < end; j++) {
+                        if (i === 1 && j === hardwareExcludedIndex) {
+                            let circle = createCircle(storedArrays[i].values[j], 'green');
+                            circle.classList.add('state-change');
+                            circle.title = 'Process 2 in Running state';
+                            rowContainer.appendChild(circle);
+                            await sleep(10000);  // Pause for 5 seconds
+                        } else {
+                            let color = i === 0 ? 'red' : (i === 1 ? 'green' : 'blue');
+                            let circle = createCircle(storedArrays[i].values[j], color);
+                            circle.title = `Process ${i + 1} is in Running state`;
+                            rowContainer.appendChild(circle);
+                        }
+                    }
+                }
+                round++;
+            }
         }
-        round++;
-    }
-}
 
 
-    function createCircle(value, colorClass) {
-        let circle = document.createElement("div");
-        circle.className = "circle " + colorClass + "-circle";
-        circle.textContent = value;
-        return circle;
-    }
-    function calculateAndPrintTimes() {
-    let numOfArrays = storedArrays.length;
-    let totalUtilization = 0;  // For calculating average utilization
-    let lastFinishTime = 0;    // To keep track of the previous process's finish time
+        function createCircle(value, colorClass) {
+            let circle = document.createElement("div");
+            circle.className = "circle " + colorClass + "-circle";
+            circle.textContent = value;
+            return circle;
+        }
+        function calculateAndPrintTimes() {
+            let numOfArrays = storedArrays.length;
+            let totalUtilization = 0;  // For calculating average utilization
+            let lastFinishTime = 0;    // To keep track of the previous process's finish time
 
-    // Calculate and print turnaround time, waiting time, and utilization time
-    for (let i = 0; i < numOfArrays; i++) {
-        let process = storedArrays[i];
+            // Calculate and print turnaround time, waiting time, and utilization time
+            for (let i = 0; i < numOfArrays; i++) {
+                let process = storedArrays[i];
 
-        // Adjust start time to be the max of last finish time and current process arrival
-        process.startTime = Math.max(lastFinishTime, process.arrivalTime);
-        let finishTime = process.startTime + process.executionTime;
+                // Adjust start time to be the max of last finish time and current process arrival
+                process.startTime = Math.max(lastFinishTime, process.arrivalTime);
+                let finishTime = process.startTime + process.executionTime;
 
-        // Update last finish time for next process
-        lastFinishTime = finishTime;
+                // Update last finish time for next process
+                lastFinishTime = finishTime;
 
-        let turnaroundTime = finishTime - process.arrivalTime;
-        let waitingTime = process.startTime - process.arrivalTime;
-        let utilizationTime = (process.executionTime / turnaroundTime) * 100;
+                let turnaroundTime = finishTime - process.arrivalTime;
+                let waitingTime = process.startTime - process.arrivalTime;
+                let utilizationTime = (process.executionTime / turnaroundTime) * 100;
 
-        // Add to total utilization for average calculation
-        totalUtilization += utilizationTime;
+                // Add to total utilization for average calculation
+                totalUtilization += utilizationTime;
 
-        console.log(`Process ${i + 1}:`);
-        console.log(`Execution time: ${process.executionTime}`);
-        console.log(`Arrival time: ${process.arrivalTime}`);
-        console.log(`Start time: ${process.startTime}`);
-        console.log(`Finish time: ${finishTime}`);
-        console.log(`Turnaround time: ${turnaroundTime}`);
-        console.log(`Waiting time: ${waitingTime}`);
-        console.log(`Utilization time: ${utilizationTime.toFixed(2)}%`);
-        console.log('------');
+                console.log(`Process ${i + 1}:`);
+                console.log(`Execution time: ${process.executionTime}`);
+                console.log(`Arrival time: ${process.arrivalTime}`);
+                console.log(`Start time: ${process.startTime}`);
+                console.log(`Finish time: ${finishTime}`);
+                console.log(`Turnaround time: ${turnaroundTime}`);
+                console.log(`Waiting time: ${waitingTime}`);
+                console.log(`Utilization time: ${utilizationTime.toFixed(2)}%`);
+                console.log('------');
 
-        // Append the data to the table
-        let row = document.createElement("tr");
-        row.innerHTML = `
+                // Append the data to the table
+                let row = document.createElement("tr");
+                row.innerHTML = `
             <td>Process ${i + 1}</td>
             <td>${process.name}</td>
             <td>${process.executionTime}</td>
@@ -417,31 +419,32 @@
             <td>${waitingTime}</td>
             <td>${utilizationTime.toFixed(2)}%</td>
         `;
-        document.querySelector("#processTable tbody").appendChild(row);
-    }
+                document.querySelector("#processTable tbody").appendChild(row);
+            }
 
-    // Show the table
-    document.getElementById("processTable").style.display = "table";
+            // Show the table
+            document.getElementById("processTable").style.display = "table";
 
-    // Calculate average utilization time
-    let averageUtilization = totalUtilization / numOfArrays;
-    console.log(`Average Utilization Time: ${averageUtilization.toFixed(2)}%`);
+            // Calculate average utilization time
+            let averageUtilization = totalUtilization / numOfArrays;
+            console.log(`Average Utilization Time: ${averageUtilization.toFixed(2)}%`);
 
-    document.getElementById('avg-utlz').style.display = 'block';
-    document.getElementById('avg-utlz').innerHTML = `<h3> Average Utilization Time:  ${averageUtilization.toFixed(2)}% </h3>`;
-}
+            document.getElementById('avg-utlz').style.display = 'block';
+            document.getElementById('avg-utlz').innerHTML = `<h3> Average Utilization Time:  ${averageUtilization.toFixed(2)}% </h3>`;
+        }
 
-    // function calculateAndPrintTimes() {
-    //     let turnAroundTimes = [];
-    //     storedArrays.forEach(arr => {
-    //         let finishTime = arr.startTime + arr.executionTime;
-    //         let turnAroundTime = finishTime - arr.arrivalTime;
-    //         turnAroundTimes.push(turnAroundTime);
-    //     });
+        // function calculateAndPrintTimes() {
+        //     let turnAroundTimes = [];
+        //     storedArrays.forEach(arr => {
+        //         let finishTime = arr.startTime + arr.executionTime;
+        //         let turnAroundTime = finishTime - arr.arrivalTime;
+        //         turnAroundTimes.push(turnAroundTime);
+        //     });
 
-    //     console.log('Turnaround times:', turnAroundTimes);
-    // }
+        //     console.log('Turnaround times:', turnAroundTimes);
+        // }
 
-</script>
+    </script>
 </body>
+
 </html>
