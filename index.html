@@ -358,6 +358,7 @@
                             let color = i === 0 ? 'red' : (i === 1 ? 'green' : 'blue');
                             let circle = createCircle(storedArrays[i].values[j], color);
                             circle.title = `Process ${i + 1} is in Running state`;
+                            circle.classList.add('animate__animated', 'animate__zoomIn');
                             rowContainer.appendChild(circle);
                         }
                     }

@@ -169,17 +169,19 @@ table#processTable tbody tr:nth-child(odd) {
 }
 
 
-.state-change{
+.state-change {
     animation-name: resourcefulfill;
     animation-duration: 10s;
-    animation-iteration-count:1 !important;
     animation-timing-function: ease-in-out;
 }
-@keyframes resourcefulfill{
-    from{
+
+@keyframes resourcefulfill {
+    from {
         background-color: rgb(240, 240, 105);
     }
-    to{
+    to {
         background-color: var(--mainColor);
     }
 }
+
+
