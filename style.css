@@ -114,6 +114,27 @@
     background-color: rgb(240, 240, 105);
 }
 
+/* Container for the heading and circles */
+.array-wrapper {
+    display: flex;
+    align-items: center; /* Align the heading and circles vertically */
+    margin-bottom: 10px;
+}
+
+/* Heading styles */
+.array-heading {
+    margin-right: 20px; /* Add space between heading and circles */
+    font-weight: bold;
+    font-size: 18px;
+    color: rgb(249, 124, 145); /* Use your chosen color */
+}
+
+/* Circle row styles (aligning next to the heading) */
+.circle-row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 table#processTable {
     width: 100%;
     text-align: center;

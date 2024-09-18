@@ -240,87 +240,115 @@
     }
 
     async function printOneByOne() {
-        let numOfArrays = storedArrays.length;
+    let numOfArrays = storedArrays.length;
 
-        // Print all circles of Array 1
-        if (storedArrays[0]) {
-            let rowContainer = document.createElement("div");
-            rowContainer.className = "circle-row";
-            rowContainer.title = 'Process 1 in Ready-Queue';
-            document.getElementById("arrayContainer").appendChild(rowContainer);
+    // Print Array 1 heading and all its circles
+    if (storedArrays[0]) {
+        let arrayWrapper = document.createElement("div");
+        arrayWrapper.className = "array-wrapper";
+        document.getElementById("arrayContainer").appendChild(arrayWrapper);
 
-            for (let i = 0; i < storedArrays[0].values.length; i++) {
-                let circle = createCircle(storedArrays[0].values[i], 'red');
-                rowContainer.appendChild(circle);
-            }
-        }
+        let array1Heading = document.createElement("div");
+        array1Heading.textContent = "Array 1"; // Add heading for Array 1
+        array1Heading.className = "array-heading"; // CSS class for the heading
+        arrayWrapper.appendChild(array1Heading);
 
-        // Print all circles of Array 2, including the hardware demanding index with yellow background
-        if (storedArrays[1]) {
-            let rowContainer = document.createElement("div");
-            rowContainer.className = "circle-row";
-            rowContainer.title = 'Process 2 in Ready-Queue';
-            document.getElementById("arrayContainer").appendChild(rowContainer);
-
-            for (let i = 0; i < storedArrays[1].values.length; i++) {
-                let circle;
-
-                // Change background to yellow if it's the hardware demanding index
-                if (i === hardwareExcludedIndex) {
-                    circle = createCircle(storedArrays[1].values[i], 'yellow');
-                    circle.title = 'Block state';  // Add the block state title
-                } else {
-                    circle = createCircle(storedArrays[1].values[i], 'green');
-                }
-
-                rowContainer.appendChild(circle);
-            }
-        }
-
-        // Print all circles of Array 3 (if it exists)
-        if (storedArrays[2]) {
-            let rowContainer = document.createElement("div");
-            rowContainer.className = "circle-row";
-            rowContainer.title = 'Process 3 in Ready-Queue';
-            document.getElementById("arrayContainer").appendChild(rowContainer);
-
-            for (let i = 0; i < storedArrays[2].values.length; i++) {
-                let circle = createCircle(storedArrays[2].values[i], 'blue');
-                rowContainer.appendChild(circle);
-            }
-        }
-
-        // Print alternating circles with Quantum
         let rowContainer = document.createElement("div");
         rowContainer.className = "circle-row";
-        document.getElementById("arrayContainer").appendChild(rowContainer);
+        rowContainer.title = 'Process 1 in Ready-Queue';
+        arrayWrapper.appendChild(rowContainer);
 
-        let maxSize = Math.max(storedArrays[0].values.length, storedArrays[1].values.length, storedArrays[2]?.values.length || 0);
-        let round = 0;
-
-        while (round < maxSize) {
-            for (let i = 0; i < storedArrays.length; i++) {
-                let start = round * quantum;
-                let end = Math.min(start + quantum, storedArrays[i].values.length);
-
-                for (let j = start; j < end; j++) {
-                    if (i === 1 && j === hardwareExcludedIndex) {
-                        let circle = createCircle(storedArrays[i].values[j], 'green');
-                        circle.classList.add('state-change');
-                        circle.title = 'Process 2 in Running state';
-                        rowContainer.appendChild(circle);
-                        await sleep(10000);  // Pause for 5 seconds
-                    } else {
-                        let color = i === 0 ? 'red' : (i === 1 ? 'green' : 'blue');
-                        let circle = createCircle(storedArrays[i].values[j], color);
-                        circle.title = `Process ${i + 1} is in Running state`;
-                        rowContainer.appendChild(circle);
-                    }
-                }
-            }
-            round++;
+        for (let i = 0; i < storedArrays[0].values.length; i++) {
+            let circle = createCircle(storedArrays[0].values[i], 'red');
+            rowContainer.appendChild(circle);
         }
     }
+
+    // Print Array 2 heading and all its circles
+    if (storedArrays[1]) {
+        let arrayWrapper = document.createElement("div");
+        arrayWrapper.className = "array-wrapper";
+        document.getElementById("arrayContainer").appendChild(arrayWrapper);
+
+        let array2Heading = document.createElement("div");
+        array2Heading.textContent = "Array 2"; // Add heading for Array 2
+        array2Heading.className = "array-heading"; // CSS class for the heading
+        arrayWrapper.appendChild(array2Heading);
+
+        let rowContainer = document.createElement("div");
+        rowContainer.className = "circle-row";
+        rowContainer.title = 'Process 2 in Ready-Queue';
+        arrayWrapper.appendChild(rowContainer);
+
+        for (let i = 0; i < storedArrays[1].values.length; i++) {
+            let circle;
+
+            // Change background to yellow if it's the hardware-demanding index
+            if (i === hardwareExcludedIndex) {
+                circle = createCircle(storedArrays[1].values[i], 'yellow');
+                circle.title = 'Block state';  // Add the block state title
+            } else {
+                circle = createCircle(storedArrays[1].values[i], 'green');
+            }
+
+            rowContainer.appendChild(circle);
+        }
+    }
+
+    // Print Array 3 heading and all its circles (if it exists)
+    if (storedArrays[2]) {
+        let arrayWrapper = document.createElement("div");
+        arrayWrapper.className = "array-wrapper";
+        document.getElementById("arrayContainer").appendChild(arrayWrapper);
+
+        let array3Heading = document.createElement("div");
+        array3Heading.textContent = "Array 3"; // Add heading for Array 3
+        array3Heading.className = "array-heading"; // CSS class for the heading
+        arrayWrapper.appendChild(array3Heading);
+
+        let rowContainer = document.createElement("div");
+        rowContainer.className = "circle-row";
+        rowContainer.title = 'Process 3 in Ready-Queue';
+        arrayWrapper.appendChild(rowContainer);
+
+        for (let i = 0; i < storedArrays[2].values.length; i++) {
+            let circle = createCircle(storedArrays[2].values[i], 'blue');
+            rowContainer.appendChild(circle);
+        }
+    }
+
+    // No changes needed for alternating process circles
+    let rowContainer = document.createElement("div");
+    rowContainer.className = "circle-row";
+    document.getElementById("arrayContainer").appendChild(rowContainer);
+
+    let maxSize = Math.max(storedArrays[0].values.length, storedArrays[1].values.length, storedArrays[2]?.values.length || 0);
+    let round = 0;
+
+    while (round < maxSize) {
+        for (let i = 0; i < storedArrays.length; i++) {
+            let start = round * quantum;
+            let end = Math.min(start + quantum, storedArrays[i].values.length);
+
+            for (let j = start; j < end; j++) {
+                if (i === 1 && j === hardwareExcludedIndex) {
+                    let circle = createCircle(storedArrays[i].values[j], 'green');
+                    circle.classList.add('state-change');
+                    circle.title = 'Process 2 in Running state';
+                    rowContainer.appendChild(circle);
+                    await sleep(10000);  // Pause for 5 seconds
+                } else {
+                    let color = i === 0 ? 'red' : (i === 1 ? 'green' : 'blue');
+                    let circle = createCircle(storedArrays[i].values[j], color);
+                    circle.title = `Process ${i + 1} is in Running state`;
+                    rowContainer.appendChild(circle);
+                }
+            }
+        }
+        round++;
+    }
+}
+
 
     function createCircle(value, colorClass) {
         let circle = document.createElement("div");
