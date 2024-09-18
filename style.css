@@ -7,6 +7,10 @@
     font-family: sans-serif;
     text-align: center;
 }
+#arrayContainer{
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
 #avg-utlz{
     display: none;
     background-color: rgb(253, 157, 171);

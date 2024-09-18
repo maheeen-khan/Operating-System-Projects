@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Random Arrays</title>
     <link rel="stylesheet" href="style.css">
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
     <!-- <style>
         /* Your existing styles */
         :root {
@@ -133,6 +137,7 @@
     <thead>
         <tr>
             <th>Process</th>
+            <th>Process ID</th>
             <th>Execution Time</th>
             <th>Arrival Time</th>
             <th>Start Time</th>
@@ -249,7 +254,7 @@
         document.getElementById("arrayContainer").appendChild(arrayWrapper);
 
         let array1Heading = document.createElement("div");
-        array1Heading.textContent = "Array 1"; // Add heading for Array 1
+        array1Heading.textContent = "Array 1 in Ready Queue"; // Add heading for Array 1
         array1Heading.className = "array-heading"; // CSS class for the heading
         arrayWrapper.appendChild(array1Heading);
 
@@ -271,7 +276,7 @@
         document.getElementById("arrayContainer").appendChild(arrayWrapper);
 
         let array2Heading = document.createElement("div");
-        array2Heading.textContent = "Array 2"; // Add heading for Array 2
+        array2Heading.textContent = "Array 2 in Ready Queue"; // Add heading for Array 2
         array2Heading.className = "array-heading"; // CSS class for the heading
         arrayWrapper.appendChild(array2Heading);
 
@@ -302,7 +307,7 @@
         document.getElementById("arrayContainer").appendChild(arrayWrapper);
 
         let array3Heading = document.createElement("div");
-        array3Heading.textContent = "Array 3"; // Add heading for Array 3
+        array3Heading.textContent = "Array 3 in Ready Queue"; // Add heading for Array 3
         array3Heading.className = "array-heading"; // CSS class for the heading
         arrayWrapper.appendChild(array3Heading);
 
@@ -317,11 +322,21 @@
         }
     }
 
-    // No changes needed for alternating process circles
+    // NEW: Print heading for alternating process circles
+    let processHeadingWrapper = document.createElement("div");
+    processHeadingWrapper.className = "array-wrapper";
+    document.getElementById("arrayContainer").appendChild(processHeadingWrapper);
+
+    let processHeading = document.createElement("div");
+    processHeading.textContent = "Process in Running State";  // Add heading for alternating process circles
+    processHeading.className = "array-heading";
+    processHeadingWrapper.appendChild(processHeading);
+
     let rowContainer = document.createElement("div");
     rowContainer.className = "circle-row";
-    document.getElementById("arrayContainer").appendChild(rowContainer);
+    processHeadingWrapper.appendChild(rowContainer);
 
+    // Alternating process circle printing
     let maxSize = Math.max(storedArrays[0].values.length, storedArrays[1].values.length, storedArrays[2]?.values.length || 0);
     let round = 0;
 
@@ -393,6 +408,7 @@
         let row = document.createElement("tr");
         row.innerHTML = `
             <td>Process ${i + 1}</td>
+            <td>${process.name}</td>
             <td>${process.executionTime}</td>
             <td>${process.arrivalTime}</td>
             <td>${process.startTime}</td>
