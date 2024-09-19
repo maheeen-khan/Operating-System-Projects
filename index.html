@@ -203,6 +203,7 @@
                 let useHardware = parseInt(prompt("Do you have a demand of hardware for Process 2? (press 1 for Yes, 0 for No):"), 10);
                 if (useHardware === 1) {
                     hardwareExcludedIndex = parseInt(prompt("At which index of Process 2 do you want to use hardware?"), 10);
+                    
                     if (isNaN(hardwareExcludedIndex) || hardwareExcludedIndex < 0 || hardwareExcludedIndex >= storedArrays[1].values.length) {
                         alert("Invalid index entered for Process 2 hardware usage.");
                         hardwareExcludedIndex = -1;
@@ -434,16 +435,7 @@
             document.getElementById('avg-utlz').innerHTML = `<h3> Average Utilization Time:  ${averageUtilization.toFixed(2)}% </h3>`;
         }
 
-        // function calculateAndPrintTimes() {
-        //     let turnAroundTimes = [];
-        //     storedArrays.forEach(arr => {
-        //         let finishTime = arr.startTime + arr.executionTime;
-        //         let turnAroundTime = finishTime - arr.arrivalTime;
-        //         turnAroundTimes.push(turnAroundTime);
-        //     });
-
-        //     console.log('Turnaround times:', turnAroundTimes);
-        // }
+       
 
     </script>
 </body>

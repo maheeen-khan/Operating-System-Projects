@@ -178,9 +178,11 @@ table#processTable tbody tr:nth-child(odd) {
 @keyframes resourcefulfill {
     from {
         background-color:rgb(171, 171, 171);
+        opacity: 0.5;
     }
     to {
         background-color: var(--mainColor);
+        opacity: 1;
     }
 }
 
