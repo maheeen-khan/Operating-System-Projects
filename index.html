@@ -4,119 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Random Arrays</title>
+    <title>Process Control Block</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-    <!-- <style>
-        /* Your existing styles */
-        :root {
-            --mainColor: rgb(255, 42, 134);
-        }
-
-        * {
-            font-family: sans-serif;
-            text-align: center;
-        }
-
-        .circle {
-            width: 100px;
-            height: 100px;
-            border-radius: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 18px;
-            color: white;
-            margin: 5px;
-            float: left;
-        }
-
-        .circle-row {
-            display: flex;
-            flex-wrap: nowrap;
-            margin-bottom: 20px;
-        }
-
-        .red-circle {
-            background-color: red;
-        }
-
-        .red-circle:hover {
-            background-color: rgb(252, 151, 151);
-        }
-
-        .green-circle {
-            background-color: green;
-        }
-
-        .green-circle:hover {
-            background-color: rgb(105, 222, 105);
-            cursor: pointer;
-        }
-
-        .blue-circle {
-            background-color: blue;
-            cursor: pointer;
-        }
-
-        .blue-circle:hover {
-            background-color: rgb(131, 131, 255);
-            cursor: pointer;
-        }
-
-        .heading {
-            text-align: center;
-            font-family: Verdana, Geneva, Tahoma, sans-serif;
-            font-style: oblique;
-            color: var(--mainColor);
-            text-shadow: 1px 1px 3px grey;
-            padding-bottom: 9px;
-        }
-
-        .start {
-            padding: 9px 25px;
-            background-color: var(--mainColor);
-            color: white;
-            border-radius: 15px;
-            border: none;
-            box-shadow: 2px 2px 3px gray inset;
-            margin: 4px;
-        }
-
-        .start:hover {
-            background-color: rgb(253, 157, 171);
-            cursor: pointer;
-        }
-
-        .start:active {
-            box-shadow: -1px -2px 3px gray inset;
-        }
-
-        .reset {
-            padding: 9px 25px;
-            background-color: rgb(255, 212, 219);
-            border: 1px solid var(--mainColor);
-            border-radius: 15px;
-            box-shadow: 2px 2px 3px rgb(156, 154, 154) inset;
-            margin: 4px;
-        }
-
-        .reset:hover {
-            background-color: var(--mainColor);
-            color: white;
-            cursor: pointer;
-        }
-
-        .reset:active {
-            box-shadow: -1px -2px 3px gray inset;
-        }
-
-        .yellow-circle {
-            background-color: yellow;
-        }
-
-    </style> -->
-
 </head>
 
 <body>
@@ -124,15 +15,23 @@
     <h1 class="heading">Process Control Block</h1>
     <hr>
 
-    <h3 style="text-align: center; color: rgb(156, 156, 156);">Click the button to start creating processes:</h3>
-    <button onclick="startCreatingArrays()" class="start" title="Click to create the processes.">Start</button>
-    <button onclick="resetFunc()" class="reset" title="Click to reset the processes.">Reset</button>
+    <h5 style="text-align: center; color: rgb(156, 156, 156);">Enter details :</h5>
+
+    <div class="container">
+        <label for="noProc" class="frs-inp text-center">Enter number of Process (max 3) <br>
+            <input type="number" id="noProc" class="mt-2"></label> <br>
+        <button onclick="resetFunc()" class="reset" title="Click to reset the processes.">Reset</button>
+
+        <button onclick="createInputFields()" class="start">Submit</button>
+        <div id="inputFieldsContainer"></div>
+    </div>
 
     <!-- Placeholder for array containers -->
     <div id="arrayContainer"></div>
 
     <!-- Table for displaying process information -->
-    <table id="processTable" border="1" style="width:100%; text-align:center; margin-top:20px; display:none;" class="animate__animated animate__zoomIn animate__delay-3s animate__slower">;
+    <table id="processTable" border="1" style="width:100%; text-align:center; margin-top:20px; display:none;"
+        class="animate__animated animate__zoomIn animate__delay-3s animate__slower">;
         <thead>
             <tr>
                 <th>Process</th>
@@ -151,13 +50,13 @@
 
     <div id="avg-utlz" class="animate__animated animate__zoomIn animate__delay-3s animate__slower"></div>
 
+    <script src="bootstrap-5.3.3-dist/js/bootstrap.min.js"></script>
     <script>
         let storedArrays = [];
         let arrivalTime = 0;
-        let quantum = 1; // Default quantum value
         let start_time = 0;
-        let size;
-        let hardwareExcludedIndex = -1; // Index to exclude from alternating circles
+        let quantum = 1; // Default quantum value
+        let hardwareExcludedIndex = -1;
 
         function resetFunc() {
             // Clear the array container
@@ -172,42 +71,84 @@
 
             // Hide the average utilization display
             document.getElementById('avg-utlz').style.display = 'none';
+
+            const numOfProcesses = parseInt(document.getElementById('noProc').value);
+            for (let i = 0; i < numOfProcesses; i++) {
+                const inputField = document.getElementById(`exeTime${i}`);
+                if (inputField) {
+                    inputField.value = ''; // Clear the value of the input field
+                }
+            }
+
+            document.getElementById('noProc').value = ''
         }
 
-        function startCreatingArrays() {
-            // resetFunc();
+        function createInputFields() {
+            const numOfProcesses = parseInt(document.getElementById('noProc').value);
+            const container = document.getElementById('inputFieldsContainer');
+            container.innerHTML = ''; // Clear any existing fields
 
-            let numOfArrays = prompt("Enter the number of Process (max 3):");
-            numOfArrays = parseInt(numOfArrays, 10);
-
-            if (isNaN(numOfArrays) || numOfArrays < 1 || numOfArrays > 3) {
+            if (isNaN(numOfProcesses) || numOfProcesses < 1 || numOfProcesses > 3) {
                 alert("Please enter a valid number between 1 and 3.");
                 return;
             }
 
-            for (let i = 0; i < numOfArrays; i++) {
-                size = prompt(`Enter the execution time for Process ${i + 1} (max 4):`);
-                size = parseInt(size, 10);
+            // Create input fields for execution times
+            for (let i = 0; i < numOfProcesses; i++) {
 
-                if (isNaN(size) || size < 1 || size > 4) {
-                    alert("Please enter a valid number between 1 and 4.");
+                const label = document.createElement('div');
+                label.textContent = `Execution time of Process ${i + 1}`; // Descriptive line
+                label.style.fontWeight = 'bold'; // Optional: make it bold for emphasis
+                label.style.marginBottom = '5px'; // Space between label and input
+                container.appendChild(label);
+
+                const inputField = document.createElement('input');
+                inputField.type = 'number';
+                inputField.placeholder = `Process ${i + 1}`;
+                inputField.id = `exeTime${i}`;
+
+                // Apply the styles using the var color from your code
+                inputField.style.backgroundColor = 'pink';
+                inputField.style.padding = '10px';
+                inputField.style.borderRadius = '5px';
+                inputField.style.border = 'none'
+                inputField.style.color = '#333'; // For contrast
+                inputField.style.fontSize = '16px';
+                inputField.style.marginBottom = '10px';
+                inputField.style.width = '53%';
+
+                container.appendChild(inputField);
+                container.appendChild(document.createElement('br'));
+            }
+
+            const processButton = document.createElement('button');
+            processButton.textContent = 'Process';
+            processButton.classList.add('start');
+            processButton.onclick = startCreatingArrays;
+            container.appendChild(processButton);
+        }
+
+        function startCreatingArrays() {
+            let numOfProcesses = parseInt(document.getElementById('noProc').value);
+
+            for (let i = 0; i < numOfProcesses; i++) {
+                let executionTime = parseInt(document.getElementById(`exeTime${i}`).value);
+
+                if (isNaN(executionTime) || executionTime < 1 || executionTime > 4) {
+                    alert("Please enter a valid execution time between 1 and 4.");
                     return;
                 }
 
                 let arrayName = prompt(`Enter a name for Process ${i + 1}:`);
-                createRandomArray(i, size, arrayName);
+                createRandomArray(i, executionTime, arrayName);
             }
 
-            // Prompt for hardware usage for array 2
-            if (numOfArrays > 1) {
-                let useHardware = parseInt(prompt("Do you have a demand of hardware for Process 2? (press 1 for Yes, 0 for No):"), 10);
-                if (useHardware === 1) {
-                    hardwareExcludedIndex = parseInt(prompt("At which index of Process 2 do you want to use hardware?"), 10);
-                    
-                    if (isNaN(hardwareExcludedIndex) || hardwareExcludedIndex < 0 || hardwareExcludedIndex >= storedArrays[1].values.length) {
-                        alert("Invalid index entered for Process 2 hardware usage.");
-                        hardwareExcludedIndex = -1;
-                    }
+            let useHardware = parseInt(prompt("Do you have a demand of hardware for Process 2? (press 1 for Yes, 0 for No):"), 10);
+            if (useHardware === 1) {
+                hardwareExcludedIndex = parseInt(prompt("At which index of Process 2 do you want to use hardware?"), 10);
+                if (isNaN(hardwareExcludedIndex) || hardwareExcludedIndex < 0 || hardwareExcludedIndex >= storedArrays[1].values.length) {
+                    alert("Invalid index entered for Process 2 hardware usage.");
+                    hardwareExcludedIndex = -1;
                 }
             }
 
@@ -368,47 +309,29 @@
             }
         }
 
-
         function createCircle(value, colorClass) {
             let circle = document.createElement("div");
             circle.className = "circle " + colorClass + "-circle";
             circle.textContent = value;
             return circle;
         }
+
         function calculateAndPrintTimes() {
             let numOfArrays = storedArrays.length;
-            let totalUtilization = 0;  // For calculating average utilization
-            let lastFinishTime = 0;    // To keep track of the previous process's finish time
+            let totalUtilization = 0;
+            let lastFinishTime = 0;
 
-            // Calculate and print turnaround time, waiting time, and utilization time
             for (let i = 0; i < numOfArrays; i++) {
                 let process = storedArrays[i];
-
-                // Adjust start time to be the max of last finish time and current process arrival
                 process.startTime = Math.max(lastFinishTime, process.arrivalTime);
                 let finishTime = process.startTime + process.executionTime;
-
-                // Update last finish time for next process
                 lastFinishTime = finishTime;
 
                 let turnaroundTime = finishTime - process.arrivalTime;
                 let waitingTime = process.startTime - process.arrivalTime;
                 let utilizationTime = (process.executionTime / turnaroundTime) * 100;
-
-                // Add to total utilization for average calculation
                 totalUtilization += utilizationTime;
 
-                console.log(`Process ${i + 1}:`);
-                console.log(`Execution time: ${process.executionTime}`);
-                console.log(`Arrival time: ${process.arrivalTime}`);
-                console.log(`Start time: ${process.startTime}`);
-                console.log(`Finish time: ${finishTime}`);
-                console.log(`Turnaround time: ${turnaroundTime}`);
-                console.log(`Waiting time: ${waitingTime}`);
-                console.log(`Utilization time: ${utilizationTime.toFixed(2)}%`);
-                console.log('------');
-
-                // Append the data to the table
                 let row = document.createElement("tr");
                 row.innerHTML = `
             <td>Process ${i + 1}</td>
@@ -420,23 +343,19 @@
             <td>${turnaroundTime}</td>
             <td>${waitingTime}</td>
             <td>${utilizationTime.toFixed(2)}%</td>
-        `;
+            `;
                 document.querySelector("#processTable tbody").appendChild(row);
             }
-
-            // Show the table
-            document.getElementById("processTable").style.display = "table";
 
             // Calculate average utilization time
             let averageUtilization = totalUtilization / numOfArrays;
             console.log(`Average Utilization Time: ${averageUtilization.toFixed(2)}%`);
 
             document.getElementById('avg-utlz').style.display = 'block';
-            document.getElementById('avg-utlz').innerHTML = `<h3> Average Utilization Time:  ${averageUtilization.toFixed(2)}% </h3>`;
+            document.getElementById('avg-utlz').innerHTML = `<h6> Average Utilization Time:  ${averageUtilization.toFixed(2)}% </h6>`;
+
+            document.getElementById("processTable").style.display = "table";
         }
-
-       
-
     </script>
 </body>
 
