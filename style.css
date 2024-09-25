@@ -204,4 +204,8 @@ table#processTable tbody tr:nth-child(odd) {
     }
 }
 
-
+@media screen and (max-width:768px){
+    .container,.arrayContainer{
+        width: 100% !important;
+    }
+}
